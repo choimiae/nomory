@@ -1,0 +1,57 @@
+@charset "utf-8";
+
+/*
+	** 초기화 CSS
+*/
+
+
+* { box-sizing: border-box; outline: none; }
+html { margin: 0; padding: 0; font-size: 16px; }
+body { margin: 0; padding: 0; line-height: 1.3; color: #111; overflow-x: hidden; }
+div, h1, h2, h3, h4, h5, h6, ul, ol, li, dl, dt, dd, p, form, fieldset, input, table, tr, th, td, button, textarea, select { margin: 0; padding: 0; }
+h1, h2, h3, h4, h5, h6 { font-size: 100%; font-weight: 500; }
+img { border: 0; vertical-align: top; max-width: 100%; }
+hr { display: none; }
+ul, ol, dl, dt, dd, li { list-style: none; }
+table, th, td { border-collapse: collapse; border-spacing: 0; font-weight: 500; }
+caption { display: block; text-indent: -9999em; overflow: hidden; height: 0; font-size: 0; line-height: 0; }
+fieldset, blockquote, iframe, button { border: none; }
+i, em, u, cite { font-style: normal; }
+strong, em, b { font-weight: 500; }
+a { color: #111; text-decoration: none; }
+button { background: transparent; cursor: pointer; vertical-align: middle;  color: #111; -webkit-text-size-adjust: none; outline: none; }
+input, select, textarea, button { font-size: 16px; border-radius: var(--border-radius); }
+button,
+input[type="submit"],
+input[type="button"],
+input[type="reset"] { cursor: pointer; -webkit-appearance: none; outline: none;}
+section, nav, article, aside, header, footer, main { display: block; }
+input[type="text"],
+input[type="search"],
+input[type="tel"],
+input[type="number"],
+input[type="password"] { -webkit-appearance: none; outline: none; }
+input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
+::placeholder { color: #afafaf; }
+::-webkit-input-placeholder { color: #afafaf; }
+::-moz-placeholder { color: #afafaf; }
+:-ms-input-placeholder { color: #afafaf; }
+:-moz-placeholder { color: #afafaf; }
+::-ms-clear,
+::-ms-reveal { display: none; }
+::-webkit-calendar-picker-indicator { filter: invert(0.6); }
+select, textarea, button { -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
+input[type="text"],
+input[type="search"] { -webkit-appearance: none; outline: none; }
+input:-webkit-autofill { box-shadow: 0 0 0 1000px #fff inset !important; -webkit-box-shadow: 0 0 0 1000px #fff inset !important; }
+input:not([type="checkbox"],
+[type="radio"],
+[type="file"],
+[type="color"]),
+select { border: 1px solid #ddd; background: #fff; height: var(--height); line-height: var(--height); padding: 0 10px; outline: none; }
+textarea { border: 1px solid #ddd; background: #fff; padding: 10px; }
+input[type="checkbox"],
+input[type="radio"] { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
+::-webkit-scrollbar { width: 8px; height: 4px; }
+::-webkit-scrollbar-thumb { background: #ddd; }
+::-webkit-scrollbar-track { background: #f6f6f6; }
