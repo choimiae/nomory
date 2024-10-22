@@ -44,12 +44,6 @@ select, textarea, button { -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
 input[type="text"],
 input[type="search"] { -webkit-appearance: none; outline: none; }
 input:-webkit-autofill { box-shadow: 0 0 0 1000px #fff inset !important; -webkit-box-shadow: 0 0 0 1000px #fff inset !important; }
-input:not([type="checkbox"],
-[type="radio"],
-[type="file"],
-[type="color"]),
-select { border: 1px solid #ddd; background: #fff; height: var(--height); line-height: var(--height); padding: 0 10px; outline: none; }
-textarea { border: 1px solid #ddd; background: #fff; padding: 10px; }
 input[type="checkbox"],
 input[type="radio"] { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
 ::-webkit-scrollbar { width: 8px; height: 4px; }

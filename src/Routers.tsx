@@ -1,15 +1,19 @@
 import React from "react";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import Maps from "./components/map/Maps";
+import {ThemeProvider} from "@mui/material";
+import theme from "./setup/theme";
+import List from "./pages/List";
 
-function Routers() {
+const Routers:React.FC = () => {
 
 	return (
-		<BrowserRouter>
-			<Routes>
-				<Route path="/map" element={<Maps/>}></Route>
-			</Routes>
-		</BrowserRouter>
+		<ThemeProvider theme={theme}>
+			<BrowserRouter>
+				<Routes>
+					<Route path="/list" element={<List/>}></Route>
+				</Routes>
+			</BrowserRouter>
+		</ThemeProvider>
 	)
 }
 
