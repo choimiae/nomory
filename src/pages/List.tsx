@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Map, MapMarker} from "react-kakao-maps-sdk";
 import {Paper, IconButton, InputBase, Box} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import Logo from "../assets/logo.png";
 
 interface MarkerListType {
 	position: {
@@ -101,12 +102,16 @@ const List:React.FC = () => {
 	return (
 		<Box
 			component="section"
-			sx={{p:2, height:"100vh"}}
+			sx={{height:"100vh"}}
 		>
-			<Box component="div">
+			<Box component="header" sx={{p:2, textAlign:"center"}}>
+				<Box component="div" sx={{mb:1}}>
+					<img src={Logo} alt="" style={{maxWidth:"100px"}}/>
+				</Box>
 				<Paper
-					component="div" variant="outlined"
-					sx={{display: "flex", alignItems: "center", width: "100%", mb:1}}
+					component="div"
+					variant="outlined"
+					sx={{display: "flex", alignItems: "center", width: "100%"}}
 				>
 					<InputBase
 						sx={{pl:2, pr:2, flex: 1}}
@@ -115,7 +120,7 @@ const List:React.FC = () => {
 						onKeyDown={handleKeydown}
 					/>
 					<IconButton
-						type="button" sx={{p: "10px"}}
+						type="button" sx={{p: 1}}
 						aria-label="검색하기"
 						onClick={search}
 					>

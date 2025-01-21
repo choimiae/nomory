@@ -8,7 +8,10 @@ const theme = createTheme({
 		secondary: {
 			main: "#98a4b3"
 		}
-	}
+	},
+	shape: {
+		borderRadius: 0,
+	},
 })
 
 export default theme;
