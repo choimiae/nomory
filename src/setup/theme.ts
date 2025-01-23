@@ -9,9 +9,9 @@ const theme = createTheme({
 			main: "#111"
 		}
 	},
-	shape: {
-		borderRadius: 0,
-	},
+	typography: {
+		"fontFamily": `"BMJUA", sans-serif`,
+	}
 })
 
 export default theme;
