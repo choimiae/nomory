@@ -80,6 +80,12 @@ const List:React.FC = () => {
 	}
 
 
+	// 마커 저장
+	const saveMarker = () => {
+		setOpen(false);
+	}
+
+
 	return (
 		<>
 			<Box
@@ -143,7 +149,7 @@ const List:React.FC = () => {
 			</Box>
 
 			{/* 팝업 :: 장소 등록 */}
-			<PlaceFormModal open={open} onClose={selectMarkerClose} info={selectMarker} />
+			<PlaceFormModal open={open} onClose={selectMarkerClose} onConfirm={saveMarker} info={selectMarker} />
 
 			{/* 알림 :: 장소 없음 */}
 			{

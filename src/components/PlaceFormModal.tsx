@@ -5,10 +5,11 @@ import {MarkerListType} from "../setup/interfaces";
 interface PlaceOptionType {
 	open: boolean,
 	onClose: () => void,
+	onConfirm: () => void,
 	info: MarkerListType | null
 }
 
-const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose}) => {
+const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfirm}) => {
 	//const [dateFormat, setDateFormat] = useState<string | null>(null);
 
 	const [data, setData] = useState<MarkerListType | null>(info);
@@ -83,7 +84,7 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose}) => {
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={onClose}>닫기</Button>
-					<Button type="button" variant="contained">저장</Button>
+					<Button type="button" variant="contained" onClick={onConfirm}>저장</Button>
 				</DialogActions>
 			</Dialog >
 		</>
