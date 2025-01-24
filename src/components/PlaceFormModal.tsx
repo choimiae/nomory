@@ -1,25 +1,35 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Dialog , DialogTitle, DialogContent, TextField, DialogActions, Button} from '@mui/material';
-
+import {MarkerListType} from "../setup/interfaces";
 
 interface PlaceOptionType {
 	open: boolean,
 	onClose: () => void,
-	info: {
-		position: {
-			lat: number,
-			lng: number
-		},
-		content: string,
-		addrName: string,
-		date?: Date | null,
-		memo?: string | null,
-	} | null
+	info: MarkerListType | null
 }
 
 const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose}) => {
+	//const [dateFormat, setDateFormat] = useState<string | null>(null);
 
-	if(!open || !info) return null;
+	const [data, setData] = useState<MarkerListType | null>(info);
+
+	useEffect(() => {
+		setData(info);
+	}, [info]);
+
+	if(!open || !data) return null;
+
+	// 데이터 저장
+	const inputChange = (field: keyof MarkerListType) =>
+		(event: React.ChangeEvent<HTMLInputElement>) => {
+			let values = event.target.value;
+
+			// 날짜 - 포맷 적용
+			if(field === 'date')
+				values = values.replace(/[^0-9]/g, '').replace(/^(\d{4})(\d{2})(\d{0,2})$/, '$1-$2-$3');
+
+			setData((prev) => prev ? { ...prev, [field]: values } : null);
+		};
 
 	return (
 		<>
@@ -30,7 +40,7 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose}) => {
 				maxWidth="sm"
 			>
 				<DialogTitle sx={{ m: 0, p: 2 }}>
-					{info.content}
+					{data.content}
 				</DialogTitle>
 				<DialogContent dividers>
 					<TextField
@@ -39,7 +49,7 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose}) => {
 						margin="dense"
 						label="주소"
 						type="text"
-						value={info.addrName}
+						value={data.addrName}
 						fullWidth
 						multiline
 						variant="standard"
@@ -51,9 +61,11 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose}) => {
 						label="방문 일자"
 						type="text"
 						placeholder="YYYY-MM-DD"
-						value={info.date}
+						value={data.date || ''}
 						fullWidth
 						variant="standard"
+						onChange={inputChange('date')}
+						slotProps={{htmlInput:{maxLength:10}}}
 					/>
 					<TextField
 						autoFocus
@@ -61,9 +73,10 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose}) => {
 						margin="dense"
 						label="메모"
 						type="text"
-						value={info.memo}
+						value={data.memo || ''}
 						fullWidth
 						variant="standard"
+						onChange={inputChange('memo')}
 						multiline
 						rows={5}
 					/>

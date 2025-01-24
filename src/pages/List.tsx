@@ -1,19 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import PlaceFormModal from "../components/PlaceFormModal";
+import Header from '../template/Header'
+import PlaceFormModal from '../components/PlaceFormModal';
+import {MarkerListType} from "../setup/interfaces";
 import {Map, MapMarker, CustomOverlayMap} from 'react-kakao-maps-sdk';
-import {Paper, IconButton, InputBase, Box, Chip, Link} from '@mui/material';
+import {Paper, IconButton, InputBase, Box, Chip, Alert, Snackbar} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import LogoImg from '../assets/logo.png';
 import MarkerImg from '../assets/marker.png';
-
-interface MarkerListType {
-	position: {
-		lat: number,
-		lng: number
-	},
-	content: string,
-	addrName: string
-}
 
 
 const List:React.FC = () => {
@@ -22,9 +14,10 @@ const List:React.FC = () => {
 	const [input, setInput] = useState<string>('');
 	const [selectMarker, setSelectMarker] = useState<MarkerListType | null>(null);
 	const [open, setOpen] = useState<boolean>(false);
+	const [empty, setEmpty] = useState<boolean>(false);
 	const ps = new kakao.maps.services.Places();
 
-	// 검색어 입력
+	// 검색어 input
 	const searchKeyword = (event:React.ChangeEvent<HTMLInputElement>) => {
 		setInput(event.target.value);
 	}
@@ -66,17 +59,21 @@ const List:React.FC = () => {
 				setMarkers(markerArr);
 				map.setBounds(bounds)
 			}
+			// 검색 결과 없을 경우
+			else if(status === 'ZERO_RESULT') {
+				setEmpty(true);
+			}
 		})
 	}
 
-	// 마커 클릭
+	// 마커 click
 	const selectMarkerOpen = (data:MarkerListType) => {
 		setOpen(true);
 		setSelectMarker(data);
 	}
 
 
-	// 마커 모달 닫기
+	// 마커 close
 	const selectMarkerClose = () => {
 		setOpen(false);
 		setSelectMarker(null);
@@ -89,12 +86,10 @@ const List:React.FC = () => {
 				component="section"
 				sx={{height:"100vh", display:"flex", flexDirection:"column"}}
 			>
-				<Box component="header" sx={{p:2, textAlign:"center"}}>
-					<Box component="div" sx={{mb:1}}>
-						<Link href="/list"><img src={LogoImg} alt="" style={{maxWidth:"100px"}}/></Link>
-					</Box>
-				</Box>
-				<Box component="div" sx={{pl:2, pr:2, pb:2}}>
+
+				<Header/>
+
+				<Box component="div" sx={{pl:2, pr:2, pb:2, position:"relative"}}>
 					<Paper
 						component="div"
 						variant="outlined"
@@ -102,7 +97,7 @@ const List:React.FC = () => {
 					>
 						<InputBase
 							sx={{pl:2, pr:2, flex: 1}}
-							placeholder="키위드/장소를 입력해주세요."
+							placeholder="키워드/장소를 입력해주세요."
 							onInput={searchKeyword}
 							onKeyDown={searchKeydown}
 						/>
@@ -147,7 +142,22 @@ const List:React.FC = () => {
 				</Map>
 			</Box>
 
-			<PlaceFormModal open={open} onClose={selectMarkerClose} info={selectMarker}/>
+			{/* 팝업 :: 장소 등록 */}
+			<PlaceFormModal open={open} onClose={selectMarkerClose} info={selectMarker} />
+
+			{/* 알림 :: 장소 없음 */}
+			{
+				empty && (<Snackbar open={empty} autoHideDuration={2000} onClose={() => {setEmpty(false);}}>
+					<Alert
+						onClose={() => {setEmpty(false);}}
+						severity="warning"
+						variant="filled"
+						sx={{width: "100%"}}
+					>
+						검색 결과가 없습니다.
+					</Alert>
+				</Snackbar>)
+			}
 		</>
 	)
 }
