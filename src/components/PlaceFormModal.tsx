@@ -1,17 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {Dialog , DialogTitle, DialogContent, TextField, DialogActions, Button} from '@mui/material';
+import {Dialog , DialogTitle, DialogContent, TextField, DialogActions, Button, Rating, Typography} from '@mui/material';
 import {MarkerListType} from "../setup/interfaces";
 
 interface PlaceOptionType {
 	open: boolean,
 	onClose: () => void,
-	onConfirm: () => void,
+	onConfirm: (value:MarkerListType) => void,
 	info: MarkerListType | null
 }
 
 const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfirm}) => {
-	//const [dateFormat, setDateFormat] = useState<string | null>(null);
-
 	const [data, setData] = useState<MarkerListType | null>(info);
 
 	useEffect(() => {
@@ -21,8 +19,8 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfir
 	if(!open || !data) return null;
 
 	// 데이터 저장
-	const inputChange = (field: keyof MarkerListType) =>
-		(event: React.ChangeEvent<HTMLInputElement>) => {
+	const inputChange = (field: keyof MarkerListType) => {
+		return (event: React.ChangeEvent<HTMLInputElement>) => {
 			let values = event.target.value;
 
 			// 날짜 - 포맷 적용
@@ -31,6 +29,12 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfir
 
 			setData((prev) => prev ? { ...prev, [field]: values } : null);
 		};
+	}
+
+	// 별점 데이터 저장
+	const ratingChange = (event:React.SyntheticEvent, value:number|null) => {
+		setData((prev) => prev ? { ...prev, rating: value} : null);
+	}
 
 	return (
 		<>
@@ -81,10 +85,12 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfir
 						multiline
 						rows={5}
 					/>
+					<Typography component="div" sx={{pt:2}}>평점</Typography>
+					<Rating name="rating" value={data.rating || 0} max={5} onChange={ratingChange}/>
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={onClose}>닫기</Button>
-					<Button type="button" variant="contained" onClick={onConfirm}>저장</Button>
+					<Button type="button" variant="contained" onClick={() => {onConfirm(data);}}>저장</Button>
 				</DialogActions>
 			</Dialog >
 		</>

@@ -81,8 +81,10 @@ const List:React.FC = () => {
 
 
 	// 마커 저장
-	const saveMarker = () => {
+	const saveMarker = (data:MarkerListType) => {
 		setOpen(false);
+
+		console.log(data);
 	}
 
 
