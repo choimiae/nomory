@@ -10,7 +10,7 @@ const Routers:React.FC = () => {
 		<ThemeProvider theme={theme}>
 			<BrowserRouter>
 				<Routes>
-					<Route path="/list" element={<List/>}></Route>
+					<Route path="/place/list" element={<List/>}></Route>
 				</Routes>
 			</BrowserRouter>
 		</ThemeProvider>
