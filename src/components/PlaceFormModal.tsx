@@ -18,22 +18,28 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfir
 
 	if(!open || !data) return null;
 
-	// 데이터 저장
-	const inputChange = (field: keyof MarkerListType) => {
-		return (event: React.ChangeEvent<HTMLInputElement>) => {
-			let values = event.target.value;
+	// 일자 input
+	const dateChange = (event:React.ChangeEvent<HTMLInputElement>) => {
+		let value = event.target.value;
+		value = value.replace(/[^0-9]/g, '').replace(/^(\d{4})(\d{2})(\d{0,2})$/, '$1-$2-$3');
 
-			// 날짜 - 포맷 적용
-			if(field === 'date')
-				values = values.replace(/[^0-9]/g, '').replace(/^(\d{4})(\d{2})(\d{0,2})$/, '$1-$2-$3');
-
-			setData((prev) => prev ? { ...prev, [field]: values } : null);
-		};
+		dataStore('date', value);
 	}
 
-	// 별점 데이터 저장
-	const ratingChange = (event:React.SyntheticEvent, value:number|null) => {
-		setData((prev) => prev ? { ...prev, rating: value} : null);
+	// 메모 input
+	const memoChange = (event:React.ChangeEvent<HTMLInputElement>) => {
+		dataStore('memo', event.target.value);
+	}
+
+	// 별점 input
+	const ratingChange = (event:React.SyntheticEvent, value:MarkerListType['rating']) => {
+		dataStore('rating', value);
+	}
+
+
+	// 데이터 저장
+	const dataStore = <K extends keyof MarkerListType>(key: K, value:MarkerListType[K]) => {
+		return setData((prev) => prev ? { ...prev, [key]: value } : null);
 	}
 
 	return (
@@ -69,7 +75,7 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfir
 						value={data.date || ''}
 						fullWidth
 						variant="standard"
-						onChange={inputChange('date')}
+						onChange={dateChange}
 						slotProps={{htmlInput:{maxLength:10}}}
 					/>
 					<TextField
@@ -81,7 +87,7 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfir
 						value={data.memo || ''}
 						fullWidth
 						variant="standard"
-						onChange={inputChange('memo')}
+						onChange={memoChange}
 						multiline
 						rows={5}
 					/>

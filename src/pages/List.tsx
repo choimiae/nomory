@@ -1,5 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import Header from '../template/Header'
+import React, {useState} from 'react';
+import api from '../setup/api';
+import Header from '../template/Header';
 import PlaceFormModal from '../components/PlaceFormModal';
 import {MarkerListType} from "../setup/interfaces";
 import {Map, MapMarker, CustomOverlayMap} from 'react-kakao-maps-sdk';
@@ -81,10 +82,13 @@ const List:React.FC = () => {
 
 
 	// 마커 저장
-	const saveMarker = (data:MarkerListType) => {
+	const saveMarker = async (data:Partial<MarkerListType>) : Promise<MarkerListType> => {
 		setOpen(false);
 
-		console.log(data);
+		const response = await api.post<MarkerListType>('/place', data);
+
+		console.log(response.data);
+		return response.data;
 	}
 
 
