@@ -14,14 +14,21 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfir
 
 	useEffect(() => {
 		setData(info);
+
+		console.log(info)
 	}, [info]);
 
 	if(!open || !data) return null;
 
 	// 일자 input
 	const dateChange = (event:React.ChangeEvent<HTMLInputElement>) => {
-		let value = event.target.value;
-		value = value.replace(/[^0-9]/g, '').replace(/^(\d{4})(\d{2})(\d{0,2})$/, '$1-$2-$3');
+		let value = event.target.value.replace(/[^0-9]/g, '');
+
+		value = value.replace(/^(\d{4})(\d{0,2})(\d{0,2})$/, (match, year, month, day) => {
+			if (day) return `${year}-${month}-${day}`;
+			if (month) return `${year}-${month}`;
+			return year;
+		});
 
 		dataStore('date', value);
 	}
@@ -80,7 +87,6 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfir
 					/>
 					<TextField
 						autoFocus
-						required
 						margin="dense"
 						label="메모"
 						type="text"

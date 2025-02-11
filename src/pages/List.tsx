@@ -46,6 +46,7 @@ const List:React.FC = () => {
 						continue;
 
 					markerArr.push({
+						idx: data[i].id,
 						position: {
 							lat: data[i].y,
 							lng: data[i].x

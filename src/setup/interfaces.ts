@@ -1,4 +1,5 @@
 export interface MarkerListType {
+	idx: number,
 	position: {
 		lat: number,
 		lng: number
