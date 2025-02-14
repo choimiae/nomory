@@ -5,8 +5,9 @@ export interface MarkerListType {
 		lng: number
 	},
 	content: string,
-	addrName: string,
+	addr: string,
 	date?: string | null,
 	memo?: string | null,
-	rating?: number | null
+	rating?: number | null,
+	reg_date?: string | null
 }

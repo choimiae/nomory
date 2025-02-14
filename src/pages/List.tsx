@@ -40,19 +40,19 @@ const List:React.FC = () => {
 
 				for (let i = 0; i < data.length; i++) {
 					// 주소 중복 체크
-					const isDuplicate = markerArr.some(item => item.addrName === data[i].address_name);
+					const isDuplicate = markerArr.some(item => item.addr === data[i].address_name);
 
 					if(isDuplicate)
 						continue;
 
 					markerArr.push({
-						idx: data[i].id,
+						idx: Number(data[i].id),
 						position: {
-							lat: data[i].y,
-							lng: data[i].x
+							lat: Number(data[i].y),
+							lng: Number(data[i].x)
 						},
 						content: data[i].place_name,
-						addrName:data[i].address_name,
+						addr:data[i].address_name,
 					});
 
 					bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x))
@@ -68,10 +68,21 @@ const List:React.FC = () => {
 		})
 	}
 
+
 	// 마커 click
 	const selectMarkerOpen = (data:MarkerListType) => {
+		const selectMarkerList = async (params:Partial<MarkerListType>) : Promise<MarkerListType[]> => {
+			const response = await api.get<{message: string, data:MarkerListType[]}>('/place', {params});
+			return response.data.data;
+		}
+
 		setOpen(true);
 		setSelectMarker(data);
+		selectMarkerList({idx: data.idx}).then((res) => {
+			if(res.length > 0) {
+				setSelectMarker({...data, memo: res[0].memo, date: res[0].date, rating: res[0].rating, reg_date: res[0].reg_date});
+			}
+		});
 	}
 
 
@@ -87,8 +98,6 @@ const List:React.FC = () => {
 		setOpen(false);
 
 		const response = await api.post<MarkerListType>('/place', data);
-
-		console.log(response.data);
 		return response.data;
 	}
 
@@ -130,7 +139,7 @@ const List:React.FC = () => {
 				>
 					{
 						markers.map((marker:MarkerListType) => (
-							<div key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}>
+							<div key={marker.idx}>
 								<MapMarker
 									position={marker.position}
 									image={{src: MarkerImg, size: {width:29, height:37}}}

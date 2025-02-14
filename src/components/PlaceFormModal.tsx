@@ -14,8 +14,6 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfir
 
 	useEffect(() => {
 		setData(info);
-
-		console.log(info)
 	}, [info]);
 
 	if(!open || !data) return null;
@@ -67,7 +65,7 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfir
 						margin="dense"
 						label="주소"
 						type="text"
-						value={data.addrName}
+						value={data.addr}
 						fullWidth
 						multiline
 						variant="standard"
@@ -99,6 +97,9 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfir
 					/>
 					<Typography component="div" sx={{pt:2}}>평점</Typography>
 					<Rating name="rating" value={data.rating || 0} max={5} onChange={ratingChange}/>
+					{
+						data.reg_date ? <Typography component="div" sx={{pt:2, color:'#7b7b7b'}}>등록일자: {data.reg_date.substring(0,10)}</Typography> : ''
+					}
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={onClose}>닫기</Button>
