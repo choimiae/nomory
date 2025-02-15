@@ -10,4 +10,5 @@ export interface MarkerListType {
 	memo?: string | null,
 	rating?: number | null,
 	reg_date?: string | null
+	mod_date?: string | null
 }

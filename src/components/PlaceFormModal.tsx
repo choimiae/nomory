@@ -100,6 +100,9 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfir
 					{
 						data.reg_date ? <Typography component="div" sx={{pt:2, color:'#7b7b7b'}}>등록일자: {data.reg_date.substring(0,10)}</Typography> : ''
 					}
+					{
+						data.mod_date ? <Typography component="div" sx={{color:'#7b7b7b'}}>수정일자: {data.mod_date.substring(0,10)}</Typography> : data.mod_date
+					}
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={onClose}>닫기</Button>

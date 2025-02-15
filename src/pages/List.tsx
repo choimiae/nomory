@@ -68,19 +68,20 @@ const List:React.FC = () => {
 		})
 	}
 
+	// 저장된 마커 조회
+	const selectMarkerList = async (params:Partial<MarkerListType>) : Promise<MarkerListType[]> => {
+		const response = await api.get<{message: string, data:MarkerListType[]}>('/place', {params});
+		return response.data.data;
+	}
+
 
 	// 마커 click
 	const selectMarkerOpen = (data:MarkerListType) => {
-		const selectMarkerList = async (params:Partial<MarkerListType>) : Promise<MarkerListType[]> => {
-			const response = await api.get<{message: string, data:MarkerListType[]}>('/place', {params});
-			return response.data.data;
-		}
-
 		setOpen(true);
 		setSelectMarker(data);
 		selectMarkerList({idx: data.idx}).then((res) => {
 			if(res.length > 0) {
-				setSelectMarker({...data, memo: res[0].memo, date: res[0].date, rating: res[0].rating, reg_date: res[0].reg_date});
+				setSelectMarker({...data, memo: res[0].memo, date: res[0].date, rating: res[0].rating, reg_date: res[0].reg_date, mod_date: res[0].mod_date});
 			}
 		});
 	}
@@ -95,9 +96,18 @@ const List:React.FC = () => {
 
 	// 마커 저장
 	const saveMarker = async (data:Partial<MarkerListType>) : Promise<MarkerListType> => {
+		const res = await selectMarkerList({idx: data.idx});
+		let response;
+
 		setOpen(false);
 
-		const response = await api.post<MarkerListType>('/place', data);
+		// 수정
+		if(res.length > 0)
+			response = await api.patch<MarkerListType>('/place', data);
+		// 저장
+		else
+			response = await api.post<MarkerListType>('/place', data);
+
 		return response.data;
 	}
 
