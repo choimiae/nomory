@@ -69,8 +69,8 @@ const List:React.FC = () => {
 	}
 
 	// 저장된 마커 조회
-	const selectMarkerList = async (params:Partial<MarkerListType>) : Promise<MarkerListType[]> => {
-		const response = await api.get<{message: string, data:MarkerListType[]}>('/place', {params});
+	const selectMarkerList = async (idx:MarkerListType['idx']) : Promise<MarkerListType[]> => {
+		const response = await api.get<{message: string, data:MarkerListType[]}>('/place', {params: {idx: idx}});
 		return response.data.data;
 	}
 
@@ -79,7 +79,7 @@ const List:React.FC = () => {
 	const selectMarkerOpen = (data:MarkerListType) => {
 		setOpen(true);
 		setSelectMarker(data);
-		selectMarkerList({idx: data.idx}).then((res) => {
+		selectMarkerList(data.idx).then((res) => {
 			if(res.length > 0) {
 				setSelectMarker({...data, memo: res[0].memo, date: res[0].date, rating: res[0].rating, reg_date: res[0].reg_date, mod_date: res[0].mod_date});
 			}
@@ -96,18 +96,21 @@ const List:React.FC = () => {
 
 	// 마커 저장
 	const saveMarker = async (data:Partial<MarkerListType>) : Promise<MarkerListType> => {
-		const res = await selectMarkerList({idx: data.idx});
-		let response;
+		if(!data.idx) throw new Error('❌ Fail - idx');
 
 		setOpen(false);
 
-		// 수정
-		if(res.length > 0)
-			response = await api.patch<MarkerListType>('/place', data);
-		// 저장
-		else
-			response = await api.post<MarkerListType>('/place', data);
+		const res = await selectMarkerList(data.idx);
+		const response = res.length > 0 ? await api.patch<MarkerListType>('/place', data) :  await api.post<MarkerListType>('/place', data);
+		return response.data;
+	}
 
+	// 마커 삭제
+	const deleteMaker = async (idx:MarkerListType['idx']) : Promise<MarkerListType> =>  {
+
+		setOpen(false);
+
+		const response = await api.delete<MarkerListType>('/place', {params: {idx}});
 		return response.data;
 	}
 
@@ -175,7 +178,7 @@ const List:React.FC = () => {
 			</Box>
 
 			{/* 팝업 :: 장소 등록 */}
-			<PlaceFormModal open={open} onClose={selectMarkerClose} onConfirm={saveMarker} info={selectMarker} />
+			<PlaceFormModal open={open} onClose={selectMarkerClose} onConfirm={saveMarker} info={selectMarker} onDelete={deleteMaker}/>
 
 			{/* 알림 :: 장소 없음 */}
 			{

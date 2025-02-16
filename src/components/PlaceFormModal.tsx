@@ -1,15 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import {Dialog , DialogTitle, DialogContent, TextField, DialogActions, Button, Rating, Typography} from '@mui/material';
+import {Dialog , DialogTitle, DialogContent, TextField, DialogActions, Button, Rating, Typography, IconButton} from '@mui/material';
 import {MarkerListType} from "../setup/interfaces";
 
 interface PlaceOptionType {
 	open: boolean,
 	onClose: () => void,
 	onConfirm: (value:MarkerListType) => void,
+	onDelete: (value:MarkerListType['idx']) => void,
 	info: MarkerListType | null
 }
 
-const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfirm}) => {
+const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfirm, onDelete}) => {
 	const [data, setData] = useState<MarkerListType | null>(info);
 
 	useEffect(() => {
@@ -98,14 +99,21 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfir
 					<Typography component="div" sx={{pt:2}}>평점</Typography>
 					<Rating name="rating" value={data.rating || 0} max={5} onChange={ratingChange}/>
 					{
-						data.reg_date ? <Typography component="div" sx={{pt:2, color:'#7b7b7b'}}>등록일자: {data.reg_date.substring(0,10)}</Typography> : ''
+						data.reg_date ?
+							<Typography component="div" sx={{pt:2, color:'#7b7b7b'}}>등록일자: {data.reg_date.substring(0,10)}</Typography> : ''
 					}
 					{
-						data.mod_date ? <Typography component="div" sx={{color:'#7b7b7b'}}>수정일자: {data.mod_date.substring(0,10)}</Typography> : data.mod_date
+						data.mod_date ?
+							<Typography component="div" sx={{color:'#7b7b7b'}}>수정일자: {data.mod_date.substring(0,10)}</Typography> : data.mod_date
 					}
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={onClose}>닫기</Button>
+					{
+						data.reg_date ?
+							<Button color="error" variant="contained" sx={{mr:'auto'}} onClick={() => {onDelete(data.idx);}}>삭제</Button> : ''
+					}
+
+					<Button variant='outlined' onClick={onClose}>닫기</Button>
 					<Button type="button" variant="contained" onClick={() => {onConfirm(data);}}>저장</Button>
 				</DialogActions>
 			</Dialog >
