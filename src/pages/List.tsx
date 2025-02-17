@@ -202,7 +202,7 @@ const List:React.FC = () => {
 
 			{/* 알림 :: 토스트 */}
 			{
-				toast && toast.open ? <ToastAlert open={toast?.open} type={toast?.type} message={toast?.message}  onClose={toast.onClose} /> : ''
+				toast && toast.open ? <ToastAlert open={toast.open} type={toast.type} message={toast.message}  onClose={toast.onClose} /> : ''
 			}
 		</>
 	)
