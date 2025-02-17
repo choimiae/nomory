@@ -2,11 +2,12 @@ import React, {useState} from 'react';
 import api from '../setup/api';
 import Header from '../template/Header';
 import PlaceFormModal from '../components/PlaceFormModal';
-import {MarkerListType} from "../setup/interfaces";
-import {Map, MapMarker, CustomOverlayMap} from 'react-kakao-maps-sdk';
-import {Paper, IconButton, InputBase, Box, Chip, Alert, Snackbar} from '@mui/material';
+import {MarkerListType, ToastAlertType, ToastAlertTypeList} from "../setup/interfaces";
+import {CustomOverlayMap, Map, MapMarker} from 'react-kakao-maps-sdk';
+import {Box, Chip, IconButton, InputBase, Paper} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import MarkerImg from '../assets/marker.png';
+import ToastAlert from "../components/ToastAlert";
 
 
 const List:React.FC = () => {
@@ -15,7 +16,7 @@ const List:React.FC = () => {
 	const [input, setInput] = useState<string>('');
 	const [selectMarker, setSelectMarker] = useState<MarkerListType | null>(null);
 	const [open, setOpen] = useState<boolean>(false);
-	const [empty, setEmpty] = useState<boolean>(false);
+	const [toast, setToast] = useState<ToastAlertType | null>(null);
 	const ps = new kakao.maps.services.Places();
 
 	// 검색어 input
@@ -63,7 +64,12 @@ const List:React.FC = () => {
 			}
 			// 검색 결과 없을 경우
 			else if(status === 'ZERO_RESULT') {
-				setEmpty(true);
+				setToast((prev) => ({
+					open: true,
+					type: ToastAlertTypeList.WARNING,
+					message: '검색 결과가 없습니다.',
+					onClose: () => setToast((prev) => (prev ? { ...prev, open: false } : null)),
+				}));
 			}
 		})
 	}
@@ -98,19 +104,32 @@ const List:React.FC = () => {
 	const saveMarker = async (data:Partial<MarkerListType>) : Promise<MarkerListType> => {
 		if(!data.idx) throw new Error('❌ Fail - idx');
 
-		setOpen(false);
-
 		const res = await selectMarkerList(data.idx);
 		const response = res.length > 0 ? await api.patch<MarkerListType>('/place', data) :  await api.post<MarkerListType>('/place', data);
+
+		setOpen(false);
+		setToast((prev) => ({
+			open: true,
+			type: ToastAlertTypeList.SUCCESS,
+			message: '장소가 저장되었습니다.',
+			onClose: () => setToast((prev) => (prev ? { ...prev, open: false } : null)),
+		}));
+
 		return response.data;
 	}
 
 	// 마커 삭제
 	const deleteMaker = async (idx:MarkerListType['idx']) : Promise<MarkerListType> =>  {
+		const response = await api.delete<MarkerListType>('/place', {params: {idx}});
 
 		setOpen(false);
+		setToast((prev) => ({
+			open: true,
+			type: ToastAlertTypeList.SUCCESS,
+			message: '장소가 삭제되었습니다..',
+			onClose: () => setToast((prev) => (prev ? { ...prev, open: false } : null)),
+		}));
 
-		const response = await api.delete<MarkerListType>('/place', {params: {idx}});
 		return response.data;
 	}
 
@@ -180,18 +199,10 @@ const List:React.FC = () => {
 			{/* 팝업 :: 장소 등록 */}
 			<PlaceFormModal open={open} onClose={selectMarkerClose} onConfirm={saveMarker} info={selectMarker} onDelete={deleteMaker}/>
 
-			{/* 알림 :: 장소 없음 */}
+
+			{/* 알림 :: 토스트 */}
 			{
-				empty && (<Snackbar open={empty} autoHideDuration={2000} onClose={() => {setEmpty(false);}}>
-					<Alert
-						onClose={() => {setEmpty(false);}}
-						severity="warning"
-						variant="filled"
-						sx={{width: "100%"}}
-					>
-						검색 결과가 없습니다.
-					</Alert>
-				</Snackbar>)
+				toast && toast.open ? <ToastAlert open={toast?.open} type={toast?.type} message={toast?.message}  onClose={toast.onClose} /> : ''
 			}
 		</>
 	)
