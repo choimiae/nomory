@@ -64,7 +64,7 @@ const List:React.FC = () => {
 			}
 			// 검색 결과 없을 경우
 			else if(status === 'ZERO_RESULT') {
-				setToast((prev) => ({
+				setToast(() => ({
 					open: true,
 					type: ToastAlertTypeList.WARNING,
 					message: '검색 결과가 없습니다.',
@@ -102,16 +102,16 @@ const List:React.FC = () => {
 
 	// 마커 저장
 	const saveMarker = async (data:Partial<MarkerListType>) : Promise<MarkerListType> => {
-		if(!data.idx) throw new Error('❌ Fail - idx');
+		if(!data.idx) throw new Error('idx가 없습니다.');
 
 		const res = await selectMarkerList(data.idx);
 		const response = res.length > 0 ? await api.patch<MarkerListType>('/place', data) :  await api.post<MarkerListType>('/place', data);
 
 		setOpen(false);
-		setToast((prev) => ({
+		setToast(() => ({
 			open: true,
 			type: ToastAlertTypeList.SUCCESS,
-			message: '장소가 저장되었습니다.',
+			message: '장소를 저장했습니다.',
 			onClose: () => setToast((prev) => (prev ? { ...prev, open: false } : null)),
 		}));
 
@@ -123,10 +123,10 @@ const List:React.FC = () => {
 		const response = await api.delete<MarkerListType>('/place', {params: {idx}});
 
 		setOpen(false);
-		setToast((prev) => ({
+		setToast(() => ({
 			open: true,
 			type: ToastAlertTypeList.SUCCESS,
-			message: '장소가 삭제되었습니다..',
+			message: '장소를 삭제했습니다.',
 			onClose: () => setToast((prev) => (prev ? { ...prev, open: false } : null)),
 		}));
 
@@ -201,9 +201,7 @@ const List:React.FC = () => {
 
 
 			{/* 알림 :: 토스트 */}
-			{
-				toast && toast.open ? <ToastAlert open={toast.open} type={toast.type} message={toast.message}  onClose={toast.onClose} /> : ''
-			}
+			{ toast && toast.open ? <ToastAlert open={toast.open} type={toast.type} message={toast.message}  onClose={toast.onClose} /> : '' }
 		</>
 	)
 }

@@ -13,7 +13,6 @@ export interface MarkerListType {
 	mod_date?: string | null
 }
 
-
 export enum ToastAlertTypeList {
 	SUCCESS = 'success',
 	ERROR = 'error',
