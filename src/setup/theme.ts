@@ -11,7 +11,6 @@ const theme = createTheme({
 	},
 	typography: {
 		fontFamily: `"Bazzi", sans-serif`,
-		fontSize: 17
 	}
 })
 

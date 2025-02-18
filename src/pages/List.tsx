@@ -9,6 +9,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import MarkerImg from '../assets/marker.png';
 import MarkerActiveImg from '../assets/marker-active.png';
 import ToastAlert from "../components/ToastAlert";
+import ReplayIcon from "@mui/icons-material/Replay";
 
 interface SelectMarkerListType extends MarkerListType {
 	is_saved?: boolean
@@ -28,12 +29,12 @@ const List:React.FC = () => {
 	}, [map]);
 
 
-	// 검색어 input
+	// 검색어 입력
 	const searchKeyword = (event:React.ChangeEvent<HTMLInputElement>) => {
 		setInput(event.target.value);
 	}
 
-	// 검색 enter
+	// 검색 엔터
 	const searchKeydown = (event:React.KeyboardEvent<HTMLInputElement>) => {
 		if(event.key === 'Enter')
 			search();
@@ -118,7 +119,7 @@ const List:React.FC = () => {
 	}
 
 
-	// 마커 click
+	// 마커 클릭
 	const selectMarkerOpen = (data:MarkerListType) => {
 		setOpen(true);
 		setSelectMarker(data);
@@ -130,7 +131,7 @@ const List:React.FC = () => {
 	}
 
 
-	// 마커 close
+	// 마커 닫기
 	const selectMarkerClose = () => {
 		setOpen(false);
 		setSelectMarker(null);
@@ -172,6 +173,17 @@ const List:React.FC = () => {
 		return response.data;
 	}
 
+	// 새로고침
+	const reload = () => {
+		renderMarkerList();
+		setToast(() => ({
+			open: true,
+			type: ToastAlertTypeList.SUCCESS,
+			message: '새로고침 되었습니다.',
+			onClose: () => setToast((prev) => (prev ? { ...prev, open: false } : null)),
+		}));
+	}
+
 
 	return (
 		<>
@@ -195,11 +207,20 @@ const List:React.FC = () => {
 							onKeyDown={searchKeydown}
 						/>
 						<IconButton
-							type="button" sx={{p: 1}}
+							type="button"
+							sx={{p: 1, borderRadius:0}}
 							aria-label="검색하기"
 							onClick={search}
 						>
 							<SearchIcon />
+						</IconButton>
+						<IconButton
+							type="button"
+							sx={{borderLeft:"1px solid #eee", borderRadius:0}}
+							aria-label="새로고침"
+							onClick={reload}
+						>
+							<ReplayIcon/>
 						</IconButton>
 					</Paper>
 				</Box>
@@ -213,20 +234,20 @@ const List:React.FC = () => {
 							<div key={marker.idx}>
 								<MapMarker
 									position={{lat: marker.pos_lat, lng: marker.pos_lng}}
-									image={{src: marker.is_saved ? MarkerActiveImg : MarkerImg, size: {width:24, height:31}}}
+									image={{src: marker.is_saved ? MarkerActiveImg : MarkerImg, size: {width:22, height:28}}}
 									clickable={true}
 									onClick={() => selectMarkerOpen(marker)}
 								>
 								</MapMarker>
 								<CustomOverlayMap
 									position={{lat: marker.pos_lat, lng: marker.pos_lng}}
-									yAnchor={2.4}
+									yAnchor={2.2}
 								>
 									<Chip
 										color="default"
 										size="small"
 										label={marker.title}
-										sx={marker.is_saved ? {background:"#3d6cb3", color:"#fff", border:"1px solid #000", fontSize:14} : {background:"#fff", color:"#111", border:"1px solid #000", fontSize:14}}
+										sx={marker.is_saved ? {background:"#3d6cb3", color:"#fff", border:"1px solid #000", fontSize:13} : {background:"#fff", color:"#111", border:"1px solid #000", fontSize:13}}
 									/>
 								</CustomOverlayMap>
 							</div>

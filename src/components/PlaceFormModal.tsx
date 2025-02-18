@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Dialog , DialogTitle, DialogContent, TextField, DialogActions, Button, Rating, Typography} from '@mui/material';
+import {Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button, Rating, Typography, SxProps, Box} from '@mui/material';
 import {MarkerListType} from "../setup/interfaces";
 
 interface PlaceOptionType {
@@ -48,6 +48,18 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfir
 		return setData((prev) => prev ? { ...prev, [key]: value } : null);
 	}
 
+	const sx: SxProps = {
+		"& .MuiDialog-container": {
+			alignItems: "flex-end"
+		},
+		"& .MuiDialog-paper": {
+			margin: 0,
+			borderRadius: 0,
+			width: "100%",
+			maxHeight:"100%"
+		}
+	};
+
 	return (
 		<>
 			<Dialog
@@ -55,8 +67,9 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfir
 				open={open}
 				fullWidth={true}
 				maxWidth="sm"
+				sx={sx}
 			>
-				<DialogTitle sx={{ m: 0, p: 2 }}>
+				<DialogTitle sx={{ m:0, pt:1.5, pb:1.5, pl:2, pr:2 }}>
 					{data.title}
 				</DialogTitle>
 				<DialogContent dividers>
@@ -98,23 +111,24 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfir
 					/>
 					<Typography component="div" sx={{pt:2}}>평점</Typography>
 					<Rating name="rating" value={data.rating || 0} max={5} onChange={ratingChange}/>
+					<Box component="div" sx={{mt:2, display:"flex", alignItems:"center", gap:"0 20px", color:'#7b7b7b'}}>
+						{
+							data.reg_date ?
+								<Typography component="div">등록일자: {data.reg_date.substring(0,10)}</Typography> : ''
+						}
+						{
+							data.mod_date ?
+								<Typography component="div">수정일자: {data.mod_date.substring(0,10)}</Typography> : data.mod_date
+						}
+					</Box>
 					{
 						data.reg_date ?
-							<Typography component="div" sx={{pt:2, color:'#7b7b7b'}}>등록일자: {data.reg_date.substring(0,10)}</Typography> : ''
-					}
-					{
-						data.mod_date ?
-							<Typography component="div" sx={{color:'#7b7b7b'}}>수정일자: {data.mod_date.substring(0,10)}</Typography> : data.mod_date
+							<Button color="error" variant="outlined" sx={{mt:2, width:"100%"}} onClick={() => {onDelete(data.idx);}}>장소 삭제하기</Button> : ''
 					}
 				</DialogContent>
-				<DialogActions>
-					{
-						data.reg_date ?
-							<Button color="error" variant="contained" sx={{mr:'auto'}} onClick={() => {onDelete(data.idx);}}>삭제</Button> : ''
-					}
-
-					<Button variant='outlined' onClick={onClose}>닫기</Button>
-					<Button type="button" variant="contained" onClick={() => {onConfirm(data);}}>저장</Button>
+				<DialogActions sx={{justifyContent:"center"}}>
+					<Button variant='outlined' sx={{flex:"1 1 auto"}} onClick={onClose}>취소</Button>
+					<Button type="button" variant="contained" sx={{flex:"0 0 60%"}} onClick={() => {onConfirm(data);}}>저장하기</Button>
 				</DialogActions>
 			</Dialog >
 		</>
