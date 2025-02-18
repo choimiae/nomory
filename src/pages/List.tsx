@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import api from '../setup/api';
 import Header from '../template/Header';
 import PlaceFormModal from '../components/PlaceFormModal';
@@ -18,6 +18,11 @@ const List:React.FC = () => {
 	const [open, setOpen] = useState<boolean>(false);
 	const [toast, setToast] = useState<ToastAlertType | null>(null);
 	const ps = new kakao.maps.services.Places();
+
+	useEffect(() => {
+		renderMarkerList();
+	}, []);
+
 
 	// 검색어 input
 	const searchKeyword = (event:React.ChangeEvent<HTMLInputElement>) => {
@@ -48,10 +53,8 @@ const List:React.FC = () => {
 
 					markerArr.push({
 						idx: Number(data[i].id),
-						position: {
-							lat: Number(data[i].y),
-							lng: Number(data[i].x)
-						},
+						pos_lat:Number(data[i].y),
+						pos_lng:Number(data[i].x),
 						content: data[i].place_name,
 						addr:data[i].address_name,
 					});
@@ -75,9 +78,19 @@ const List:React.FC = () => {
 	}
 
 	// 저장된 마커 조회
-	const selectMarkerList = async (idx:MarkerListType['idx']) : Promise<MarkerListType[]> => {
-		const response = await api.get<{message: string, data:MarkerListType[]}>('/place', {params: {idx: idx}});
+	const selectMarkerList = async (idx?:MarkerListType['idx']) : Promise<MarkerListType[]> => {
+		const response = await api.get<{message: string, data:MarkerListType[]}>('/place', {params: idx ? {idx: idx} : ''});
 		return response.data.data;
+	}
+
+
+	// 저장된 마커 렌더
+	const renderMarkerList = () => {
+		selectMarkerList().then((res) => {
+			if(res.length > 0) {
+				console.log(res);
+			}
+		});
 	}
 
 
@@ -173,14 +186,14 @@ const List:React.FC = () => {
 						markers.map((marker:MarkerListType) => (
 							<div key={marker.idx}>
 								<MapMarker
-									position={marker.position}
+									position={{lat: marker.pos_lat, lng: marker.pos_lng}}
 									image={{src: MarkerImg, size: {width:29, height:37}}}
 									clickable={true}
 									onClick={() => selectMarkerOpen(marker)}
 								>
 								</MapMarker>
 								<CustomOverlayMap
-									position={marker.position}
+									position={{lat: marker.pos_lat, lng: marker.pos_lng}}
 									yAnchor={2.5}
 								>
 									<Chip

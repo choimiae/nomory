@@ -1,9 +1,7 @@
 export interface MarkerListType {
 	idx: number,
-	position: {
-		lat: number,
-		lng: number
-	},
+	pos_lat: number,
+	pos_lng: number,
 	content: string,
 	addr: string,
 	date?: string | null,
