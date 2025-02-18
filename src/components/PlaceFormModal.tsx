@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Dialog , DialogTitle, DialogContent, TextField, DialogActions, Button, Rating, Typography, IconButton} from '@mui/material';
+import {Dialog , DialogTitle, DialogContent, TextField, DialogActions, Button, Rating, Typography} from '@mui/material';
 import {MarkerListType} from "../setup/interfaces";
 
 interface PlaceOptionType {
@@ -57,7 +57,7 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfir
 				maxWidth="sm"
 			>
 				<DialogTitle sx={{ m: 0, p: 2 }}>
-					{data.content}
+					{data.title}
 				</DialogTitle>
 				<DialogContent dividers>
 					<TextField

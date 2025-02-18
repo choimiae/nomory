@@ -7,8 +7,12 @@ import {CustomOverlayMap, Map, MapMarker} from 'react-kakao-maps-sdk';
 import {Box, Chip, IconButton, InputBase, Paper} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import MarkerImg from '../assets/marker.png';
+import MarkerActiveImg from '../assets/marker-active.png';
 import ToastAlert from "../components/ToastAlert";
 
+interface SelectMarkerListType extends MarkerListType {
+	is_saved?: boolean
+}
 
 const List:React.FC = () => {
 	const [markers, setMarkers] = useState<MarkerListType[]>([]);
@@ -20,8 +24,8 @@ const List:React.FC = () => {
 	const ps = new kakao.maps.services.Places();
 
 	useEffect(() => {
-		renderMarkerList();
-	}, []);
+		if (map) renderMarkerList();
+	}, [map]);
 
 
 	// 검색어 input
@@ -39,24 +43,26 @@ const List:React.FC = () => {
 	const search = () => {
 		if (!map) return;
 
-		ps.keywordSearch(input, (data:any, status:any) => {
+		ps.keywordSearch(input, async (data:any, status:any) => {
 			if(status === kakao.maps.services.Status.OK) {
+				const savedMarkers:MarkerListType[] = await selectMarkerList();
 				const bounds = new kakao.maps.LatLngBounds();
 				let markerArr = [];
 
 				for (let i = 0; i < data.length; i++) {
 					// 주소 중복 체크
 					const isDuplicate = markerArr.some(item => item.addr === data[i].address_name);
+					const isSaved = savedMarkers.some(item => item.idx === Number(data[i].id));
 
-					if(isDuplicate)
-						continue;
+					if(isDuplicate) continue;
 
 					markerArr.push({
 						idx: Number(data[i].id),
 						pos_lat:Number(data[i].y),
 						pos_lng:Number(data[i].x),
-						content: data[i].place_name,
+						title: data[i].place_name,
 						addr:data[i].address_name,
+						is_saved: isSaved
 					});
 
 					bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x))
@@ -86,9 +92,27 @@ const List:React.FC = () => {
 
 	// 저장된 마커 렌더
 	const renderMarkerList = () => {
+		if (!map) return;
+
+		const bounds = new kakao.maps.LatLngBounds();
+		let markerArr:SelectMarkerListType[] = [];
+
 		selectMarkerList().then((res) => {
 			if(res.length > 0) {
-				console.log(res);
+				res.forEach(item => {
+					markerArr.push({
+						idx: Number(item.idx),
+						pos_lat:Number(item.pos_lat),
+						pos_lng:Number(item.pos_lng),
+						title: item.title,
+						addr:item.addr,
+						is_saved: true
+					});
+					bounds.extend(new kakao.maps.LatLng(item.pos_lat, item.pos_lng))
+				});
+
+				setMarkers(markerArr);
+				map.setBounds(bounds);
 			}
 		});
 	}
@@ -120,6 +144,7 @@ const List:React.FC = () => {
 		const res = await selectMarkerList(data.idx);
 		const response = res.length > 0 ? await api.patch<MarkerListType>('/place', data) :  await api.post<MarkerListType>('/place', data);
 
+		renderMarkerList();
 		setOpen(false);
 		setToast(() => ({
 			open: true,
@@ -135,6 +160,7 @@ const List:React.FC = () => {
 	const deleteMaker = async (idx:MarkerListType['idx']) : Promise<MarkerListType> =>  {
 		const response = await api.delete<MarkerListType>('/place', {params: {idx}});
 
+		renderMarkerList();
 		setOpen(false);
 		setToast(() => ({
 			open: true,
@@ -183,24 +209,24 @@ const List:React.FC = () => {
 					onCreate={setMap}
 				>
 					{
-						markers.map((marker:MarkerListType) => (
+						markers.map((marker:SelectMarkerListType) => (
 							<div key={marker.idx}>
 								<MapMarker
 									position={{lat: marker.pos_lat, lng: marker.pos_lng}}
-									image={{src: MarkerImg, size: {width:29, height:37}}}
+									image={{src: marker.is_saved ? MarkerActiveImg : MarkerImg, size: {width:24, height:31}}}
 									clickable={true}
 									onClick={() => selectMarkerOpen(marker)}
 								>
 								</MapMarker>
 								<CustomOverlayMap
 									position={{lat: marker.pos_lat, lng: marker.pos_lng}}
-									yAnchor={2.5}
+									yAnchor={2.4}
 								>
 									<Chip
-										color="secondary"
+										color="default"
 										size="small"
-										label={marker.content}
-										sx={{fontSize:"12px"}}
+										label={marker.title}
+										sx={marker.is_saved ? {background:"#3d6cb3", color:"#fff", border:"1px solid #000", fontSize:14} : {background:"#fff", color:"#111", border:"1px solid #000", fontSize:14}}
 									/>
 								</CustomOverlayMap>
 							</div>

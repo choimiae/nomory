@@ -10,7 +10,8 @@ const theme = createTheme({
 		}
 	},
 	typography: {
-		"fontFamily": `"BMJUA", sans-serif`,
+		fontFamily: `"Bazzi", sans-serif`,
+		fontSize: 17
 	}
 })
 
