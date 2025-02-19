@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button, Rating, Typography, SxProps, Box} from '@mui/material';
-import {MarkerListType} from "../setup/interfaces";
+import {MarkerListType} from '../setup/interfaces';
 
 interface PlaceOptionType {
 	open: boolean,
@@ -49,14 +49,15 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfir
 	}
 
 	const sx: SxProps = {
-		"& .MuiDialog-container": {
-			alignItems: "flex-end"
+		'& .MuiDialog-container': {
+			alignItems: 'flex-end'
 		},
-		"& .MuiDialog-paper": {
+		'& .MuiDialog-paper': {
 			margin: 0,
 			borderRadius: 0,
-			width: "100%",
-			maxHeight:"100%"
+			width: '100%',
+			maxWidth: '100%',
+			maxHeight:'100%'
 		}
 	};
 

@@ -1,6 +1,6 @@
 import React from 'react';
-import {Snackbar, Alert} from "@mui/material";
-import {ToastAlertType} from "../setup/interfaces";
+import {Snackbar, Alert} from '@mui/material';
+import {ToastAlertType} from '../setup/interfaces';
 
 const ToastAlert:React.FC<ToastAlertType> = ({open, type, message, onClose}) => {
 

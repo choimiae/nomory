@@ -1,16 +1,16 @@
-import {createTheme} from "@mui/material/styles";
+import {createTheme} from '@mui/material/styles';
 
 const theme = createTheme({
 	palette: {
 		primary: {
-			main: "#3d6cb3"
+			main: '#3d6cb3'
 		},
 		secondary: {
-			main: "#111"
+			main: '#111'
 		}
 	},
 	typography: {
-		fontFamily: `"Bazzi", sans-serif`,
+		fontFamily: `'Bazzi', sans-serif`,
 	}
 })
 

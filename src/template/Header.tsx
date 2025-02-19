@@ -1,6 +1,6 @@
 import React from 'react';
-import {Box, Link} from "@mui/material";
-import LogoImg from "../assets/logo.png";
+import {Box, Link} from '@mui/material';
+import LogoImg from '../assets/logo.png';
 
 const Header:React.FC = () => {
 

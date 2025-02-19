@@ -2,14 +2,14 @@ import React, {useEffect, useState} from 'react';
 import api from '../setup/api';
 import Header from '../template/Header';
 import PlaceFormModal from '../components/PlaceFormModal';
-import {MarkerListType, ToastAlertType, ToastAlertTypeList} from "../setup/interfaces";
+import {MarkerListType, ToastAlertType, ToastAlertTypeList} from '../setup/interfaces';
 import {CustomOverlayMap, Map, MapMarker} from 'react-kakao-maps-sdk';
 import {Box, Chip, IconButton, InputBase, Paper} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import MarkerImg from '../assets/marker.png';
 import MarkerActiveImg from '../assets/marker-active.png';
-import ToastAlert from "../components/ToastAlert";
-import ReplayIcon from "@mui/icons-material/Replay";
+import ToastAlert from '../components/ToastAlert';
+import ReplayIcon from '@mui/icons-material/Replay';
 
 interface SelectMarkerListType extends MarkerListType {
 	is_saved?: boolean
