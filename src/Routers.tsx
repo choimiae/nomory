@@ -3,6 +3,7 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {ThemeProvider} from "@mui/material";
 import theme from "./setup/theme";
 import List from "./pages/List";
+import Register from "./pages/Register";
 
 const Routers:React.FC = () => {
 
@@ -10,6 +11,7 @@ const Routers:React.FC = () => {
 		<ThemeProvider theme={theme}>
 			<BrowserRouter>
 				<Routes>
+					<Route path="/register" element={<Register/>}></Route>
 					<Route path="/place/list" element={<List/>}></Route>
 				</Routes>
 			</BrowserRouter>

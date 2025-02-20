@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import api from '../setup/api';
-import Header from '../template/Header';
+import Layout from '../template/Layout';
 import PlaceFormModal from '../components/PlaceFormModal';
 import {MarkerListType, ToastAlertType, ToastAlertTypeList} from '../setup/interfaces';
 import {CustomOverlayMap, Map, MapMarker} from 'react-kakao-maps-sdk';
@@ -186,15 +186,9 @@ const List:React.FC = () => {
 
 
 	return (
-		<>
-			<Box
-				component="section"
-				sx={{height:"100vh", display:"flex", flexDirection:"column"}}
-			>
-
-				<Header/>
-
-				<Box component="div" sx={{pl:2, pr:2, pb:2, position:"relative"}}>
+		<Layout>
+			<Box component="div" sx={{display:"flex", flexDirection:"column", height:"100%"}}>
+				<Box component="div" sx={{p:2, pt:0, position:"relative"}}>
 					<Paper
 						component="div"
 						variant="outlined"
@@ -224,45 +218,46 @@ const List:React.FC = () => {
 						</IconButton>
 					</Paper>
 				</Box>
-				<Map
-					center={{lat: 33.5563, lng: 126.79581}}
-					style={{width: "100%", height: "100%"}}
-					onCreate={setMap}
-				>
-					{
-						markers.map((marker:SelectMarkerListType) => (
-							<div key={marker.idx}>
-								<MapMarker
-									position={{lat: marker.pos_lat, lng: marker.pos_lng}}
-									image={{src: marker.is_saved ? MarkerActiveImg : MarkerImg, size: {width:22, height:28}}}
-									clickable={true}
-									onClick={() => selectMarkerOpen(marker)}
-								>
-								</MapMarker>
-								<CustomOverlayMap
-									position={{lat: marker.pos_lat, lng: marker.pos_lng}}
-									yAnchor={2.2}
-								>
-									<Chip
-										color="default"
-										size="small"
-										label={marker.title}
-										sx={marker.is_saved ? {background:"#3d6cb3", color:"#fff", border:"1px solid #000", fontSize:13} : {background:"#fff", color:"#111", border:"1px solid #000", fontSize:13}}
-									/>
-								</CustomOverlayMap>
-							</div>
-						))
-					}
-				</Map>
+				<Box component="div" sx={{flex: "1 1 auto"}}>
+					<Map
+						center={{lat: 33.5563, lng: 126.79581}}
+						style={{width: "100%", height: "100%"}}
+						onCreate={setMap}
+					>
+						{
+							markers.map((marker:SelectMarkerListType) => (
+								<div key={marker.idx}>
+									<MapMarker
+										position={{lat: marker.pos_lat, lng: marker.pos_lng}}
+										image={{src: marker.is_saved ? MarkerActiveImg : MarkerImg, size: {width:22, height:28}}}
+										clickable={true}
+										onClick={() => selectMarkerOpen(marker)}
+									>
+									</MapMarker>
+									<CustomOverlayMap
+										position={{lat: marker.pos_lat, lng: marker.pos_lng}}
+										yAnchor={2.2}
+									>
+										<Chip
+											color="default"
+											size="small"
+											label={marker.title}
+											sx={marker.is_saved ? {background:"#3d6cb3", color:"#fff", border:"1px solid #000", fontSize:13} : {background:"#fff", color:"#111", border:"1px solid #000", fontSize:13}}
+										/>
+									</CustomOverlayMap>
+								</div>
+							))
+						}
+					</Map>
+				</Box>
 			</Box>
 
 			{/* 팝업 :: 장소 등록 */}
 			<PlaceFormModal open={open} onClose={selectMarkerClose} onConfirm={saveMarker} info={selectMarker} onDelete={deleteMaker}/>
 
-
 			{/* 알림 :: 토스트 */}
 			{ toast && toast.open ? <ToastAlert open={toast.open} type={toast.type} message={toast.message}  onClose={toast.onClose} /> : '' }
-		</>
+		</Layout>
 	)
 }
 
