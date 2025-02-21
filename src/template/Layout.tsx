@@ -13,7 +13,7 @@ const Layout:React.FC<LayoutType> = ({ children }) => {
 			sx={{height:"100vh", display:"flex", flexDirection:"column"}}
 		>
 			<Header/>
-			<Container sx={{p:0, flex:"1 1 auto"}}>
+			<Container component="section" sx={{p:[0,0,0], flex:"1 1 auto", maxWidth:["none", "none", "none"]}}>
 				{children}
 			</Container>
 		</Box>
