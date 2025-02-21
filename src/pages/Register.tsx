@@ -1,8 +1,11 @@
 import React from 'react';
-import {Box, Button, TextField, Typography, Card, CardContent, CardActions} from '@mui/material';
+import {Box, Button, TextField, Typography, Card, CardContent, CardActions, Link} from '@mui/material';
 import LogoImg from "../assets/logo.png";
 
 const Register:React.FC = () => {
+
+
+
 	return (
 		<Box component="div" sx={{p:2, pt:5, pb:5, display:"flex", alignItems:"center", justifyContent:"center", height:"100vh", background:"#eee"}}>
 			<Card sx={{ maxWidth: 450, pl:2, pr:2, pt:4, pb:4}}>
@@ -47,13 +50,13 @@ const Register:React.FC = () => {
 						fullWidth
 						variant="standard"
 					/>
-					<Box sx={{display:"flex", gap:"0 10px", mt:3}}>
-					</Box>
 				</CardContent>
 				<CardActions>
-					<Button variant='outlined' sx={{flex:"1 1 auto"}}>취소</Button>
-					<Button type="button" variant="contained" sx={{flex:"0 0 60%"}}>가입하기</Button>
+					<Button type="button" variant="contained"  fullWidth>가입하기</Button>
 				</CardActions>
+				<Box sx={{textAlign:"center", mt:1}}>
+					<Link href="/login" underline="none" variant="body2">로그인하기</Link>
+				</Box>
 			</Card>
 		</Box>
 	)
