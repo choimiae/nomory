@@ -3,11 +3,11 @@ import {Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button, Ra
 import {MarkerListType} from '../setup/interfaces';
 
 interface PlaceOptionType {
-	open: boolean,
-	onClose: () => void,
-	onConfirm: (value:MarkerListType) => void,
-	onDelete: (value:MarkerListType['idx']) => void,
-	info: MarkerListType | null
+	open: boolean;
+	onClose: () => void;
+	onConfirm: (value:MarkerListType) => void;
+	onDelete: (value:MarkerListType['idx']) => void;
+	info: MarkerListType | null;
 }
 
 const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfirm, onDelete}) => {

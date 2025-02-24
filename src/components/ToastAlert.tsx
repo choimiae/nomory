@@ -22,7 +22,6 @@ export const ToastAlert:React.FC<ToastAlertType> = ({open, type, message, onClos
 			<Alert
 				onClose={onClose}
 				severity={type}
-				variant="filled"
 				sx={{width: "100%"}}
 			>
 				{message}
