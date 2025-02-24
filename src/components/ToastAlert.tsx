@@ -1,8 +1,21 @@
 import React from 'react';
 import {Snackbar, Alert} from '@mui/material';
-import {ToastAlertType} from '../setup/interfaces';
 
-const ToastAlert:React.FC<ToastAlertType> = ({open, type, message, onClose}) => {
+export enum ToastAlertTypeList {
+	SUCCESS = 'success',
+	ERROR = 'error',
+	WARNING = 'warning',
+	INFO = 'info'
+}
+
+export interface ToastAlertType {
+	open: boolean,
+	type: ToastAlertTypeList,
+	message: string,
+	onClose: () => void
+}
+
+export const ToastAlert:React.FC<ToastAlertType> = ({open, type, message, onClose}) => {
 
 	return (
 		<Snackbar open={open} autoHideDuration={2000} onClose={onClose}>
@@ -17,5 +30,3 @@ const ToastAlert:React.FC<ToastAlertType> = ({open, type, message, onClose}) => 
 		</Snackbar>
 	)
 }
-
-export default ToastAlert;
