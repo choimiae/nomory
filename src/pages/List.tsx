@@ -11,9 +11,7 @@ import MarkerActiveImg from '../assets/marker-active.png';
 import {ToastAlert, ToastAlertType} from '../components/ToastAlert';
 import ReplayIcon from '@mui/icons-material/Replay';
 
-interface SelectMarkerListType extends MarkerListType {
-	is_saved?: boolean
-}
+type SelectMarkerListType = MarkerListType & {is_saved?: boolean}
 
 const List:React.FC = () => {
 	const [markers, setMarkers] = useState<MarkerListType[]>([]);
