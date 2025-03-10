@@ -1,7 +1,9 @@
 import React, {useState} from 'react';
-import {Box, Button, Card, CardActions, CardContent, Link, TextField, Typography} from '@mui/material';
+import {Box, Button, Card, CardActions, CardContent, Link, TextField, Typography, Alert, AlertTitle} from '@mui/material';
 import LogoImg from '../assets/logo.png';
 import {UserInfoList, UserInfoType} from '../setup/interfaces';
+import api from "../setup/api";
+import {ToastAlert, ToastAlertType} from "../components/ToastAlert";
 
 
 type RegUserInfoType = UserInfoType & {[UserInfoList.PW_CONFIRM] : string}
@@ -28,6 +30,7 @@ const Register:React.FC = () => {
 	}
 	const [user, setUser] = useState<RegUserInfoType>(defaultUser);
 	const [errors, setErrors] = useState<ErrorInfoType>(defaultErrors);
+	const [toast, setToast] = useState<ToastAlertType | null>(null);
 
 	// 비밀번호 확인
 	const passwordCheck = (event:React.ChangeEvent<HTMLInputElement>) => {
@@ -49,12 +52,26 @@ const Register:React.FC = () => {
 
 
 	// 가입
-	const join = () => {
+	const join = async () => {
+		let hasError = false;
 		for(const [key, value] of Object.entries(user)) {
 			const errorData = value ? {status:false, message:''} : {status:true, message:'필수 입력값입니다.'}
 
+			if (errorData.status) hasError = true;
+
 			setErrors(prev => ({...prev, [key] : errorData}));
 		}
+
+		if(!hasError) {
+			const response = await api.post<UserInfoType>('/user', user);
+
+			if(response.status === 201) {
+
+			} else {
+
+			}
+		}
+
 	}
 
 	return (
@@ -128,6 +145,9 @@ const Register:React.FC = () => {
 					</Box>
 				</Card>
 			</Box>
+
+			{/* 알림 :: 토스트 */}
+			{ toast && toast.open ? <ToastAlert open={toast.open} type={toast.type} message={toast.message}  onClose={toast.onClose} /> : '' }
 		</>
 	)
 }
