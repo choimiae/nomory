@@ -8,7 +8,7 @@ import {Box, Chip, IconButton, InputBase, Paper} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import MarkerImg from '../assets/marker.png';
 import MarkerActiveImg from '../assets/marker-active.png';
-import {ToastAlert, ToastAlertType, ToastAlertTypeList} from '../components/ToastAlert';
+import {ToastAlert, ToastAlertType} from '../components/ToastAlert';
 import ReplayIcon from '@mui/icons-material/Replay';
 
 interface SelectMarkerListType extends MarkerListType {
@@ -76,7 +76,7 @@ const List:React.FC = () => {
 			else if(status === 'ZERO_RESULT') {
 				setToast(() => ({
 					open: true,
-					type: ToastAlertTypeList.WARNING,
+					type: 'warning',
 					message: '검색 결과가 없습니다.',
 					onClose: () => setToast((prev) => (prev ? { ...prev, open: false } : null)),
 				}));
@@ -149,7 +149,7 @@ const List:React.FC = () => {
 		setOpen(false);
 		setToast(() => ({
 			open: true,
-			type: ToastAlertTypeList.SUCCESS,
+			type: 'success',
 			message: '장소를 저장했습니다.',
 			onClose: () => setToast((prev) => (prev ? { ...prev, open: false } : null)),
 		}));
@@ -165,7 +165,7 @@ const List:React.FC = () => {
 		setOpen(false);
 		setToast(() => ({
 			open: true,
-			type: ToastAlertTypeList.SUCCESS,
+			type: 'success',
 			message: '장소를 삭제했습니다.',
 			onClose: () => setToast((prev) => (prev ? { ...prev, open: false } : null)),
 		}));
@@ -178,7 +178,7 @@ const List:React.FC = () => {
 		renderMarkerList();
 		setToast(() => ({
 			open: true,
-			type: ToastAlertTypeList.SUCCESS,
+			type: 'success',
 			message: '새로고침 되었습니다.',
 			onClose: () => setToast((prev) => (prev ? { ...prev, open: false } : null)),
 		}));

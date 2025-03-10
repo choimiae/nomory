@@ -4,8 +4,13 @@ import LogoImg from '../assets/logo.png';
 import {UserInfoList, UserInfoType} from '../setup/interfaces';
 
 
-interface RegUserInfoType extends UserInfoType {
-	[UserInfoList.PW_CONFIRM] : string;
+type RegUserInfoType = UserInfoType & {[UserInfoList.PW_CONFIRM] : string}
+
+type ErrorInfoType = {
+	[key in keyof RegUserInfoType]: {
+		status: boolean;
+		message: string;
+	};
 }
 
 const Register:React.FC = () => {
@@ -15,7 +20,14 @@ const Register:React.FC = () => {
 		[UserInfoList.PW_CONFIRM]: '',
 		[UserInfoList.NICKNAME]: ''
 	}
+	const defaultErrors : ErrorInfoType = {
+		[UserInfoList.ID]: {status:false, message:''},
+		[UserInfoList.PW]: {status:false, message:''},
+		[UserInfoList.PW_CONFIRM]: {status:false, message:''},
+		[UserInfoList.NICKNAME]: {status:false, message:''},
+	}
 	const [user, setUser] = useState<RegUserInfoType>(defaultUser);
+	const [errors, setErrors] = useState<ErrorInfoType>(defaultErrors);
 
 	// 비밀번호 확인
 	const passwordCheck = (event:React.ChangeEvent<HTMLInputElement>) => {
@@ -23,19 +35,34 @@ const Register:React.FC = () => {
 	}
 
 	const inputChange = <K extends keyof RegUserInfoType>(key:K, value:RegUserInfoType[K]) => {
+		let data = { status:false, message:'' };
 
-		setUser(prev => prev ? {...prev, [key] : value} : {...defaultUser, [key] : value});
+		if(!value) {
+			data = {status:true, message:'필수 입력값입니다.'}
+		} else if(key === UserInfoList.PW_CONFIRM && user[UserInfoList.PW] !== value) {
+			data = {status:true, message:'비밀번호가 일치하지 않습니다.'}
+		}
+
+		setErrors(prev => ({...prev, [key] : data}));
+		setUser(prev => ({...prev, [key] : value}));
 	}
 
 
 	// 가입
 	const join = () => {
+		for(const [key, value] of Object.entries(user)) {
+			const errorData = value ? {status:false, message:''} : {status:true, message:'필수 입력값입니다.'}
 
+			setErrors(prev => ({...prev, [key] : errorData}));
+		}
 	}
 
 	return (
 		<>
-			<Box component="div" sx={{p:2, pt:5, pb:5, display:"flex", alignItems:"center", justifyContent:"center", height:"100vh", background:"#eee"}}>
+			<Box
+				component="div"
+				sx={{p:2, pt:5, pb:5, display:"flex", alignItems:"center", justifyContent:"center", height:"100vh", background:"#eee"}}
+			>
 				<Card sx={{ maxWidth: 450, pl:2, pr:2, pt:4, pb:4}}>
 					<CardContent>
 						<Box sx={{textAlign:"center"}}>
@@ -51,6 +78,8 @@ const Register:React.FC = () => {
 								type="text"
 								fullWidth
 								variant="standard"
+								error={errors[UserInfoList.ID].status}
+								helperText={errors[UserInfoList.ID].message}
 								onChange={(event) => {inputChange(UserInfoList.ID, event.target.value)}}
 							/>
 						</Box>
@@ -62,6 +91,8 @@ const Register:React.FC = () => {
 							type="password"
 							fullWidth
 							variant="standard"
+							error={errors[UserInfoList.PW].status}
+							helperText={errors[UserInfoList.PW].message}
 							onChange={(event) => {inputChange(UserInfoList.PW, event.target.value)}}
 						/>
 						<TextField
@@ -72,6 +103,8 @@ const Register:React.FC = () => {
 							type="password"
 							fullWidth
 							variant="standard"
+							error={errors[UserInfoList.PW_CONFIRM].status}
+							helperText={errors[UserInfoList.PW_CONFIRM].message}
 							onChange={passwordCheck}
 						/>
 						<TextField
@@ -82,6 +115,8 @@ const Register:React.FC = () => {
 							type="text"
 							fullWidth
 							variant="standard"
+							error={errors[UserInfoList.NICKNAME].status}
+							helperText={errors[UserInfoList.NICKNAME].message}
 							onChange={(event) => {inputChange(UserInfoList.NICKNAME, event.target.value)}}
 						/>
 					</CardContent>

@@ -1,12 +1,7 @@
 import React from 'react';
 import {Snackbar, Alert} from '@mui/material';
 
-export enum ToastAlertTypeList {
-	SUCCESS = 'success',
-	ERROR = 'error',
-	WARNING = 'warning',
-	INFO = 'info'
-}
+type ToastAlertTypeList = 'success' | 'error' | 'warning' | 'info';
 
 export interface ToastAlertType {
 	open: boolean,
