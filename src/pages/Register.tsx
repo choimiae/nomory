@@ -1,13 +1,12 @@
 import React, {useState} from 'react';
-import {Box, Button, Card, CardActions, CardContent, Link, TextField, Typography, Alert, AlertTitle} from '@mui/material';
+import {useNavigate} from 'react-router-dom';
+import {Box, Button, Card, CardActions, CardContent, Link, TextField, Typography} from '@mui/material';
 import LogoImg from '../assets/logo.png';
+import api from '../setup/api';
 import {UserInfoList, UserInfoType} from '../setup/interfaces';
-import api from "../setup/api";
-import {ToastAlert, ToastAlertType} from "../components/ToastAlert";
-
+import {ToastAlert, ToastAlertType} from '../components/ToastAlert';
 
 type RegUserInfoType = UserInfoType & {[UserInfoList.PW_CONFIRM] : string}
-
 type ErrorInfoType = {
 	[key in keyof RegUserInfoType]: {
 		status: boolean;
@@ -16,6 +15,7 @@ type ErrorInfoType = {
 }
 
 const Register:React.FC = () => {
+	const navigate = useNavigate();
 	const defaultUser : RegUserInfoType = {
 		[UserInfoList.ID]: '',
 		[UserInfoList.PW]: '',
@@ -57,21 +57,30 @@ const Register:React.FC = () => {
 		for(const [key, value] of Object.entries(user)) {
 			const errorData = value ? {status:false, message:''} : {status:true, message:'필수 입력값입니다.'}
 
-			if (errorData.status) hasError = true;
+			if (errorData.status)
+				hasError = true;
 
 			setErrors(prev => ({...prev, [key] : errorData}));
 		}
 
 		if(!hasError) {
 			const response = await api.post<UserInfoType>('/user', user);
-
 			if(response.status === 201) {
-
+				setToast({
+					open: true,
+					type: 'success',
+					message: '회원가입이 완료되었습니다.',
+					onClose: () => {navigate('/login');}
+				});
 			} else {
-
+				setToast({
+					open: true,
+					type: 'warning',
+					message: '오류가 발생했습니다.<br>잠시 후 다시 시도해 주세요.',
+					onClose: () => setToast((prev) => (prev ? { ...prev, open: false } : null))
+				});
 			}
 		}
-
 	}
 
 	return (
