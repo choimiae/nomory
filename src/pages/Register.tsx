@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {ChangeEvent, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {Box, Button, Card, CardActions, CardContent, Link, TextField, Typography} from '@mui/material';
 import LogoImg from '../assets/logo.png';
@@ -11,7 +11,7 @@ type ErrorInfoType = {
 	[key in keyof RegUserInfoType]: {
 		status: boolean;
 		message: string;
-	};
+	}
 }
 
 const Register:React.FC = () => {
@@ -26,7 +26,7 @@ const Register:React.FC = () => {
 		[UserInfoList.ID]: {status:false, message:''},
 		[UserInfoList.PW]: {status:false, message:''},
 		[UserInfoList.PW_CONFIRM]: {status:false, message:''},
-		[UserInfoList.NICKNAME]: {status:false, message:''},
+		[UserInfoList.NICKNAME]: {status:false, message:''}
 	}
 	const [user, setUser] = useState<RegUserInfoType>(defaultUser);
 	const [errors, setErrors] = useState<ErrorInfoType>(defaultErrors);
@@ -48,6 +48,23 @@ const Register:React.FC = () => {
 
 		setErrors(prev => ({...prev, [key] : data}));
 		setUser(prev => ({...prev, [key] : value}));
+	}
+
+	// 아이디 중복체크
+	const idCheck = async () => {
+		if(!user[UserInfoList.ID]) {
+			setErrors(prev => ({...prev, [UserInfoList.ID] : {status:true, message:'필수 입력값입니다.'}}));
+		} else {
+			const response = await api.get('/user/check', {params: {id: user[UserInfoList.ID]}});
+			const toastType = response.data.success ? 'success' : 'warning';
+
+			setToast({
+				open: true,
+				type: toastType,
+				message: response.data.message,
+				onClose: () => setToast((prev) => (prev ? { ...prev, open: false } : null))
+			});
+		}
 	}
 
 
@@ -95,7 +112,7 @@ const Register:React.FC = () => {
 							<img src={LogoImg} alt="" style={{maxWidth:125}}/>
 							<Typography component="h1" variant="h1" sx={{mt:1}}>회원가입</Typography>
 						</Box>
-						<Box sx={{display:"flex", alignItems:"flex-end", gap:"0 10px"}}>
+						<Box sx={{position:"relative"}}>
 							<TextField
 								autoFocus
 								required
@@ -106,8 +123,11 @@ const Register:React.FC = () => {
 								variant="standard"
 								error={errors[UserInfoList.ID].status}
 								helperText={errors[UserInfoList.ID].message}
+								sx={{pr:"80px"}}
 								onChange={(event) => {inputChange(UserInfoList.ID, event.target.value)}}
+								onKeyDown={(event:React.KeyboardEvent<HTMLInputElement>) => {if(event.key === 'Enter') idCheck();}}
 							/>
+							<Button type="button" variant="outlined" sx={{position:"absolute", right:0, top:"20px"}} onClick={idCheck}>중복체크</Button>
 						</Box>
 						<TextField
 							autoFocus

@@ -34,8 +34,11 @@ api.interceptors.response.use(
 				case 404:
 					errorMsg = '요청한 리소스를 찾을 수 없습니다.';
 					break;
+				case 409:
+					errorMsg = '중복 데이터 오류가 발생했습니다.';
+					break;
 				case 500:
-					errorMsg = '서버 에러가 발생했습니다.';
+					errorMsg = '서버 오류가 발생했습니다.';
 					break;
 				default:
 					errorMsg = '알 수 없는 오류가 발생했습니다.';
