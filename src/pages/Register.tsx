@@ -71,6 +71,10 @@ const Register:React.FC = () => {
 	// 가입
 	const join = async () => {
 		let hasError = false;
+
+		if(Object.values(errors).some(error => error.status))
+			return;
+
 		for(const [key, value] of Object.entries(user)) {
 			const errorData = value ? {status:false, message:''} : {status:true, message:'필수 입력값입니다.'}
 
