@@ -1,8 +1,39 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Box, Button, Card, CardActions, CardContent, Link, TextField, Typography} from '@mui/material';
 import LogoImg from '../assets/logo.png';
+import {UserInfoList, UserInfoType} from "../setup/interfaces";
+
+type LoginUserInfoType = Omit<UserInfoType, "nickname">
+type ErrorInfoType = {
+	[key in keyof LoginUserInfoType]: {
+		status: boolean;
+		message: string;
+	}
+}
 
 const Login = () => {
+	const [user, setUser] = useState<LoginUserInfoType>({[UserInfoList.ID]: '', [UserInfoList.PW]: ''});
+	const [errors, setErrors] = useState<ErrorInfoType>({[UserInfoList.ID]: {status:false, message:''}, [UserInfoList.PW]: {status:false, message:''}});
+
+	const inputChange = <K extends keyof LoginUserInfoType>(key:K, value:LoginUserInfoType[K]) => {
+		setUser(prev => ({...prev, [key] : value}));
+	}
+
+	const login = () => {
+		let hasError = false;
+		for(const [key, value] of Object.entries(user)) {
+			const errorData = value ? {status:false, message:''} : {status:true, message:'필수 입력 값입니다.'}
+
+			if (errorData.status)
+				hasError = true;
+
+			setErrors(prev => ({...prev, [key] : errorData}));
+		}
+
+		if(!hasError) {
+			// 로그인 로직
+		}
+	}
 
 	return (
 		<>
@@ -25,6 +56,9 @@ const Login = () => {
 								type="text"
 								fullWidth
 								variant="standard"
+								error={errors[UserInfoList.ID].status}
+								helperText={errors[UserInfoList.ID].message}
+								onChange={(event) => {inputChange(UserInfoList.ID, event.target.value)}}
 							/>
 						</Box>
 						<TextField
@@ -35,10 +69,13 @@ const Login = () => {
 							type="password"
 							fullWidth
 							variant="standard"
+							error={errors[UserInfoList.PW].status}
+							helperText={errors[UserInfoList.PW].message}
+							onChange={(event) => {inputChange(UserInfoList.PW, event.target.value)}}
 						/>
 					</CardContent>
 					<CardActions>
-						<Button type="button" variant="contained" fullWidth>로그인</Button>
+						<Button type="button" variant="contained" fullWidth onClick={login}>로그인</Button>
 					</CardActions>
 					<Box sx={{textAlign:"center", mt:1}}>
 						<Link href="/register" underline="none" variant="body2">회원가입</Link>

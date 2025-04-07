@@ -1,11 +1,10 @@
-import React, {ChangeEvent, useState} from 'react';
+import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {Box, Button, Card, CardActions, CardContent, Link, TextField, Typography} from '@mui/material';
 import LogoImg from '../assets/logo.png';
 import api from '../setup/api';
 import {UserInfoList, UserInfoType} from '../setup/interfaces';
 import {ToastAlert, ToastAlertType} from '../components/ToastAlert';
-import {Simulate} from "react-dom/test-utils";
 
 type RegUserInfoType = UserInfoType & {[UserInfoList.PW_CONFIRM] : string}
 type ErrorInfoType = {
@@ -17,20 +16,20 @@ type ErrorInfoType = {
 
 const Register:React.FC = () => {
 	const navigate = useNavigate();
-	const defaultUser : RegUserInfoType = {
+	const initUser : RegUserInfoType = {
 		[UserInfoList.ID]: '',
 		[UserInfoList.PW]: '',
 		[UserInfoList.PW_CONFIRM]: '',
 		[UserInfoList.NICKNAME]: ''
 	}
-	const defaultErrors : ErrorInfoType = {
+	const initError : ErrorInfoType = {
 		[UserInfoList.ID]: {status:false, message:''},
 		[UserInfoList.PW]: {status:false, message:''},
 		[UserInfoList.PW_CONFIRM]: {status:false, message:''},
 		[UserInfoList.NICKNAME]: {status:false, message:''}
 	}
-	const [user, setUser] = useState<RegUserInfoType>(defaultUser);
-	const [errors, setErrors] = useState<ErrorInfoType>(defaultErrors);
+	const [user, setUser] = useState<RegUserInfoType>(initUser);
+	const [errors, setErrors] = useState<ErrorInfoType>(initError);
 	const [toast, setToast] = useState<ToastAlertType | null>(null);
 
 	// 비밀번호 확인
@@ -42,7 +41,7 @@ const Register:React.FC = () => {
 		let data = { status:false, message:'' };
 
 		if(!value) {
-			data = {status:true, message:'필수 입력값입니다.'}
+			data = {status:true, message:'필수 입력 값입니다.'}
 		} else if(key === UserInfoList.PW_CONFIRM && user[UserInfoList.PW] !== value) {
 			data = {status:true, message:'비밀번호가 일치하지 않습니다.'}
 		}
@@ -59,7 +58,7 @@ const Register:React.FC = () => {
 			return;
 
 		for(const [key, value] of Object.entries(user)) {
-			const errorData = value ? {status:false, message:''} : {status:true, message:'필수 입력값입니다.'}
+			const errorData = value ? {status:false, message:''} : {status:true, message:'필수 입력 값입니다.'}
 
 			if (errorData.status)
 				hasError = true;
@@ -67,16 +66,16 @@ const Register:React.FC = () => {
 			setErrors(prev => ({...prev, [key] : errorData}));
 		}
 
-		const response = await api.get('/user/check', {params: {id: user[UserInfoList.ID]}});
+		const response = await api.get('/auth/check-id', {params: {id: user[UserInfoList.ID]}});
 		if(response.data.success) {
 			setErrors(prev => ({...prev, [UserInfoList.ID] : {status:false, message:''}}));
 			if(!hasError) {
-				const response = await api.post<UserInfoType>('/user', user);
+				const response = await api.post<UserInfoType>('/auth/register', user);
 				if(response.status === 201) {
 					setToast({
 						open: true,
 						type: 'success',
-						message: '회원가입이 완료되었습니다.',
+						message: '회원 가입이 완료되었습니다.',
 						onClose: () => {navigate('/login');}
 					});
 				} else {
