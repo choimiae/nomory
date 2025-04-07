@@ -5,6 +5,7 @@ import LogoImg from '../assets/logo.png';
 import api from '../setup/api';
 import {UserInfoList, UserInfoType} from '../setup/interfaces';
 import {ToastAlert, ToastAlertType} from '../components/ToastAlert';
+import {Simulate} from "react-dom/test-utils";
 
 type RegUserInfoType = UserInfoType & {[UserInfoList.PW_CONFIRM] : string}
 type ErrorInfoType = {
@@ -50,24 +51,6 @@ const Register:React.FC = () => {
 		setUser(prev => ({...prev, [key] : value}));
 	}
 
-	// 아이디 중복체크
-	const idCheck = async () => {
-		if(!user[UserInfoList.ID]) {
-			setErrors(prev => ({...prev, [UserInfoList.ID] : {status:true, message:'필수 입력값입니다.'}}));
-		} else {
-			const response = await api.get('/user/check', {params: {id: user[UserInfoList.ID]}});
-			const toastType = response.data.success ? 'success' : 'warning';
-
-			setToast({
-				open: true,
-				type: toastType,
-				message: response.data.message,
-				onClose: () => setToast((prev) => (prev ? { ...prev, open: false } : null))
-			});
-		}
-	}
-
-
 	// 가입
 	const join = async () => {
 		let hasError = false;
@@ -84,23 +67,29 @@ const Register:React.FC = () => {
 			setErrors(prev => ({...prev, [key] : errorData}));
 		}
 
-		if(!hasError) {
-			const response = await api.post<UserInfoType>('/user', user);
-			if(response.status === 201) {
-				setToast({
-					open: true,
-					type: 'success',
-					message: '회원가입이 완료되었습니다.',
-					onClose: () => {navigate('/login');}
-				});
-			} else {
-				setToast({
-					open: true,
-					type: 'warning',
-					message: '오류가 발생했습니다.<br>잠시 후 다시 시도해 주세요.',
-					onClose: () => setToast((prev) => (prev ? { ...prev, open: false } : null))
-				});
+		const response = await api.get('/user/check', {params: {id: user[UserInfoList.ID]}});
+		if(response.data.success) {
+			setErrors(prev => ({...prev, [UserInfoList.ID] : {status:false, message:''}}));
+			if(!hasError) {
+				const response = await api.post<UserInfoType>('/user', user);
+				if(response.status === 201) {
+					setToast({
+						open: true,
+						type: 'success',
+						message: '회원가입이 완료되었습니다.',
+						onClose: () => {navigate('/login');}
+					});
+				} else {
+					setToast({
+						open: true,
+						type: 'warning',
+						message: '오류가 발생했습니다.<br>잠시 후 다시 시도해 주세요.',
+						onClose: () => setToast((prev) => (prev ? { ...prev, open: false } : null))
+					});
+				}
 			}
+		} else {
+			setErrors(prev => ({...prev, [UserInfoList.ID] : {status:true, message:'이미 사용 중인 아이디입니다.'}}));
 		}
 	}
 
@@ -116,23 +105,18 @@ const Register:React.FC = () => {
 							<img src={LogoImg} alt="" style={{maxWidth:125}}/>
 							<Typography component="h1" variant="h1" sx={{mt:1}}>회원가입</Typography>
 						</Box>
-						<Box sx={{position:"relative"}}>
-							<TextField
-								autoFocus
-								required
-								margin="dense"
-								label="아이디"
-								type="text"
-								fullWidth
-								variant="standard"
-								error={errors[UserInfoList.ID].status}
-								helperText={errors[UserInfoList.ID].message}
-								sx={{pr:"80px"}}
-								onChange={(event) => {inputChange(UserInfoList.ID, event.target.value)}}
-								onKeyDown={(event:React.KeyboardEvent<HTMLInputElement>) => {if(event.key === 'Enter') idCheck();}}
-							/>
-							<Button type="button" variant="outlined" sx={{position:"absolute", right:0, top:"20px"}} onClick={idCheck}>중복체크</Button>
-						</Box>
+						<TextField
+							autoFocus
+							required
+							margin="dense"
+							label="아이디"
+							type="text"
+							fullWidth
+							variant="standard"
+							error={errors[UserInfoList.ID].status}
+							helperText={errors[UserInfoList.ID].message}
+							onChange={(event) => {inputChange(UserInfoList.ID, event.target.value)}}
+						/>
 						<TextField
 							autoFocus
 							required
