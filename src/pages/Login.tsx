@@ -1,9 +1,12 @@
 import React, {useState} from 'react';
 import {Box, Button, Card, CardActions, CardContent, Link, TextField, Typography} from '@mui/material';
 import LogoImg from '../assets/logo.png';
-import {UserInfoList, UserInfoType} from "../setup/interfaces";
+import {UserInfoList, UserInfoType} from '../setup/interfaces';
+import api from '../setup/api';
+import {ToastAlert, ToastAlertType} from '../components/ToastAlert';
+import {useNavigate} from 'react-router-dom';
 
-type LoginUserInfoType = Omit<UserInfoType, "nickname">
+type LoginUserInfoType = Omit<UserInfoType, 'nickname'>
 type ErrorInfoType = {
 	[key in keyof LoginUserInfoType]: {
 		status: boolean;
@@ -12,14 +15,16 @@ type ErrorInfoType = {
 }
 
 const Login = () => {
+	const navigate = useNavigate();
 	const [user, setUser] = useState<LoginUserInfoType>({[UserInfoList.ID]: '', [UserInfoList.PW]: ''});
 	const [errors, setErrors] = useState<ErrorInfoType>({[UserInfoList.ID]: {status:false, message:''}, [UserInfoList.PW]: {status:false, message:''}});
+	const [toast, setToast] = useState<ToastAlertType | null>(null);
 
 	const inputChange = <K extends keyof LoginUserInfoType>(key:K, value:LoginUserInfoType[K]) => {
 		setUser(prev => ({...prev, [key] : value}));
 	}
 
-	const login = () => {
+	const login = async () => {
 		let hasError = false;
 		for(const [key, value] of Object.entries(user)) {
 			const errorData = value ? {status:false, message:''} : {status:true, message:'필수 입력 값입니다.'}
@@ -31,7 +36,23 @@ const Login = () => {
 		}
 
 		if(!hasError) {
-			// 로그인 로직
+			const response = await api.post('/auth/login', user);
+
+			if(response.data.success) {
+				setToast({
+					open: true,
+					type: 'success',
+					message: response.data.message,
+					onClose: () => {navigate('/place/list');}
+				});
+			} else {
+				setToast({
+					open: true,
+					type: 'warning',
+					message: response.data.message,
+					onClose: () => setToast((prev) => (prev ? { ...prev, open: false } : null))
+				});
+			}
 		}
 	}
 
@@ -71,6 +92,7 @@ const Login = () => {
 							variant="standard"
 							error={errors[UserInfoList.PW].status}
 							helperText={errors[UserInfoList.PW].message}
+							onKeyDown={(event:React.KeyboardEvent<HTMLInputElement>) => {if(event.key === 'Enter') login();}}
 							onChange={(event) => {inputChange(UserInfoList.PW, event.target.value)}}
 						/>
 					</CardContent>
@@ -82,6 +104,9 @@ const Login = () => {
 					</Box>
 				</Card>
 			</Box>
+
+			{/* 알림 :: 토스트 */}
+			{ toast && toast.open ? <ToastAlert open={toast.open} type={toast.type} message={toast.message}  onClose={toast.onClose} /> : '' }
 		</>
 	)
 }

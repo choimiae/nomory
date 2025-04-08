@@ -32,11 +32,6 @@ const Register:React.FC = () => {
 	const [errors, setErrors] = useState<ErrorInfoType>(initError);
 	const [toast, setToast] = useState<ToastAlertType | null>(null);
 
-	// 비밀번호 확인
-	const passwordCheck = (event:React.ChangeEvent<HTMLInputElement>) => {
-		inputChange(UserInfoList.PW_CONFIRM, event.target.value);
-	}
-
 	const inputChange = <K extends keyof RegUserInfoType>(key:K, value:RegUserInfoType[K]) => {
 		let data = { status:false, message:'' };
 
@@ -88,7 +83,7 @@ const Register:React.FC = () => {
 				}
 			}
 		} else {
-			setErrors(prev => ({...prev, [UserInfoList.ID] : {status:true, message:'이미 사용 중인 아이디입니다.'}}));
+			setErrors(prev => ({...prev, [UserInfoList.ID] : {status:true, message:response.data.message}}));
 		}
 	}
 
@@ -138,7 +133,7 @@ const Register:React.FC = () => {
 							variant="standard"
 							error={errors[UserInfoList.PW_CONFIRM].status}
 							helperText={errors[UserInfoList.PW_CONFIRM].message}
-							onChange={passwordCheck}
+							onChange={(event) => {inputChange(UserInfoList.PW_CONFIRM, event.target.value)}}
 						/>
 						<TextField
 							autoFocus
