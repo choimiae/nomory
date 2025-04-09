@@ -45,6 +45,8 @@ const Login = () => {
 					message: response.data.message,
 					onClose: () => {navigate('/place/list');}
 				});
+
+				localStorage.setItem('token', response.data.token);
 			} else {
 				setToast({
 					open: true,
