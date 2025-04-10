@@ -174,12 +174,6 @@ const List:React.FC = () => {
 	// 새로고침
 	const reload = () => {
 		renderMarkerList();
-		setToast(() => ({
-			open: true,
-			type: 'success',
-			message: '새로고침 되었습니다.',
-			onClose: () => setToast((prev) => (prev ? { ...prev, open: false } : null)),
-		}));
 	}
 
 

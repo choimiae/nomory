@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
 import {Box, Button, Card, CardActions, CardContent, Link, TextField, Typography} from '@mui/material';
+import {useNavigate} from 'react-router-dom';
 import LogoImg from '../assets/logo.png';
 import {UserInfoList, UserInfoType} from '../setup/interfaces';
 import api from '../setup/api';
 import {ToastAlert, ToastAlertType} from '../components/ToastAlert';
-import {useNavigate} from 'react-router-dom';
 
 type LoginUserInfoType = Omit<UserInfoType, 'nickname'>
 type ErrorInfoType = {
@@ -16,17 +16,17 @@ type ErrorInfoType = {
 
 const Login = () => {
 	const navigate = useNavigate();
-	const [user, setUser] = useState<LoginUserInfoType>({[UserInfoList.ID]: '', [UserInfoList.PW]: ''});
+	const [userInfo, setUserInfo] = useState<LoginUserInfoType>({[UserInfoList.ID]: '', [UserInfoList.PW]: ''});
 	const [errors, setErrors] = useState<ErrorInfoType>({[UserInfoList.ID]: {status:false, message:''}, [UserInfoList.PW]: {status:false, message:''}});
 	const [toast, setToast] = useState<ToastAlertType | null>(null);
 
 	const inputChange = <K extends keyof LoginUserInfoType>(key:K, value:LoginUserInfoType[K]) => {
-		setUser(prev => ({...prev, [key] : value}));
+		setUserInfo(prev => ({...prev, [key] : value}));
 	}
 
 	const login = async () => {
 		let hasError = false;
-		for(const [key, value] of Object.entries(user)) {
+		for(const [key, value] of Object.entries(userInfo)) {
 			const errorData = value ? {status:false, message:''} : {status:true, message:'필수 입력 값입니다.'}
 
 			if (errorData.status)
@@ -36,7 +36,7 @@ const Login = () => {
 		}
 
 		if(!hasError) {
-			const response = await api.post('/auth/login', user);
+			const response = await api.post('/auth/login', userInfo);
 
 			if(response.data.success) {
 				setToast({
@@ -47,6 +47,7 @@ const Login = () => {
 				});
 
 				localStorage.setItem('token', response.data.token);
+
 			} else {
 				setToast({
 					open: true,
@@ -54,6 +55,8 @@ const Login = () => {
 					message: response.data.message,
 					onClose: () => setToast((prev) => (prev ? { ...prev, open: false } : null))
 				});
+
+				localStorage.removeItem('token');
 			}
 		}
 	}
