@@ -1,8 +1,8 @@
 @charset "utf-8";
 
 @font-face {
-	font-family: 'Bazzi';
-	src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/Bazzi.woff') format('woff');
-	font-weight: normal;
+	font-family: 'Freesentation-4Regular';
+	src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2404@1.0/Freesentation-4Regular.woff2') format('woff2');
+	font-weight: 900;
 	font-style: normal;
 }

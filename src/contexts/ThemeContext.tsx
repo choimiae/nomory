@@ -13,7 +13,7 @@ const CustomThemeProvider = ({children} : {children : ReactNode}) => {
 			}
 		},
 		typography: {
-			fontFamily: `'Bazzi', sans-serif`,
+			fontFamily: `'Freesentation-4Regular', sans-serif`,
 			h1: {
 				fontSize:"1.4em"
 			},
