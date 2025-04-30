@@ -113,7 +113,7 @@ const List:React.FC = () => {
 				setMarkers(markerArr);
 				map.setBounds(bounds);
 			} else {
-				bounds.extend(new kakao.maps.LatLng(37.881377522264906, 127.72974685072276))
+				bounds.extend(new kakao.maps.LatLng(37.881377, 127.729746))
 				map.setBounds(bounds);
 			}
 		});
@@ -215,7 +215,7 @@ const List:React.FC = () => {
 				</Box>
 				<Box component="div" sx={{flex: "1 1 auto"}}>
 					<Map
-						center={{lat: 37.881377522264906, lng: 127.72974685072276 }}
+						center={{lat: 37.881377, lng: 127.729746 }}
 						style={{width: "100%", height: "100%"}}
 						onCreate={setMap}
 					>

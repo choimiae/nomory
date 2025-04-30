@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button, Rating, Typography, SxProps, Box} from '@mui/material';
+import {Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button, Rating, Typography, SxProps, Box, Stack} from '@mui/material';
+import IconButton from '@mui/material/IconButton';
 import {MarkerListType} from '../setup/interfaces';
+import ShareIcon from '@mui/icons-material/Share';
 
 interface PlaceOptionType {
 	open: boolean;
@@ -18,6 +20,8 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfir
 	}, [info]);
 
 	if(!open || !data) return null;
+
+	const shareUrl = `https://place.map.kakao.com/${data.idx}`;
 
 	// 일자 input
 	const dateChange = (event:React.ChangeEvent<HTMLInputElement>) => {
@@ -71,7 +75,12 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfir
 				sx={sx}
 			>
 				<DialogTitle sx={{ m:0, pt:1.5, pb:1.5, pl:2, pr:2 }}>
-					{data.title}
+					<Stack component="div" direction="row" alignItems="center" justifyContent="space-between" gap="0 10px">
+						{data.title}
+						<IconButton component="a" href={shareUrl} target="_blank" rel="noopener noreferrer" color="primary" size="small" aria-label="공유하기">
+							<ShareIcon fontSize="small" />
+						</IconButton>
+					</Stack>
 				</DialogTitle>
 				<DialogContent dividers>
 					<TextField
