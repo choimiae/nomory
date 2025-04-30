@@ -158,7 +158,7 @@ const Register:React.FC = () => {
 			</Box>
 
 			{/* 알림 :: 토스트 */}
-			{ toast && toast.open ? <ToastAlert open={toast.open} type={toast.type} message={toast.message}  onClose={toast.onClose} /> : '' }
+			<ToastAlert toast={toast} />
 		</>
 	)
 }

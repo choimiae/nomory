@@ -10,25 +10,32 @@ export interface ToastAlertType {
 	onClose: () => void
 }
 
-export const ToastAlert:React.FC<ToastAlertType> = ({open, type, message, onClose}) => {
+interface ToastContainerType {
+	toast: ToastAlertType | null;
+}
+
+export const ToastAlert:React.FC<ToastContainerType> = ({toast}) => {
+
+	if(!toast?.open)
+		return null;
 
 	return (
 		<>
 			<Backdrop
-				open={open}
+				open={toast.open}
 				sx={{ zIndex: 1200, background:"rgba(0,0,0,0.3)"}}
 			/>
 			<Snackbar
-				open={open}
+				open={toast.open}
 				autoHideDuration={1500}
-				onClose={onClose}
+				onClose={toast.onClose}
 			>
 				<Alert
-					onClose={onClose}
-					severity={type}
+					onClose={toast.onClose}
+					severity={toast.type}
 					sx={{width: "100%", zIndex: 1500}}
 				>
-					{message}
+					{toast.message}
 				</Alert>
 			</Snackbar>
 		</>
