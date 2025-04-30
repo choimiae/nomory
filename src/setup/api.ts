@@ -10,14 +10,18 @@ const api:AxiosInstance = axios.create({
 
 
 // 요청 인터셉터
-api.interceptors.request.use (
-	(config:InternalAxiosRequestConfig) : InternalAxiosRequestConfig => {
+api.interceptors.request.use(
+	(config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
+		const token = localStorage.getItem('token');
+		if (token && config.headers) {
+			config.headers.Authorization = `Bearer ${token}`;
+		}
 		return config;
 	},
-	(error:AxiosError) : Promise<AxiosError> => {
+	(error: AxiosError): Promise<AxiosError> => {
 		return Promise.reject(error);
 	}
-)
+);
 
 
 // 응답 인터셉터
