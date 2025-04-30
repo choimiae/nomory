@@ -1,16 +1,25 @@
 import React, {useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import {Box, Link, Stack} from '@mui/material';
 import FaceIcon from '@mui/icons-material/Face';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
-
 import LogoImg from '../assets/logo.png';
 import {useUser} from '../contexts/UserContext';
 
 const Header:React.FC = () => {
-	const { user } = useUser();
+	const { user, setUser } = useUser();
 	const [anchorElem, setAnchorElem] = useState<HTMLElement | null>(null);
+	const navigate = useNavigate();
+
+	const logout = () => {
+		localStorage.removeItem('token');
+		setUser(null);
+
+		navigate('/');
+	}
+
 
 	return (
 		<Stack component="header" direction="row" alignItems="center" justifyContent="space-between" sx={{p:2, pb:1.5}}>
@@ -43,7 +52,7 @@ const Header:React.FC = () => {
 					open={Boolean(anchorElem)}
 					onClose={()=>{setAnchorElem(null);}}
 				>
-					<MenuItem onClick={()=>{setAnchorElem(null);}}>로그아웃</MenuItem>
+					<MenuItem onClick={logout}>로그아웃</MenuItem>
 				</Menu>
 			</div>
 		</Stack>

@@ -5,6 +5,7 @@ import LogoImg from '../assets/logo.png';
 import {UserInfoList, UserInfoType} from '../setup/interfaces';
 import api from '../setup/api';
 import {ToastAlert, ToastAlertType} from '../components/ToastAlert';
+import {useUser} from '../contexts/UserContext';
 
 type LoginUserInfoType = Omit<UserInfoType, 'nickname'>
 type ErrorInfoType = {
@@ -19,6 +20,7 @@ const Login = () => {
 	const [userInfo, setUserInfo] = useState<LoginUserInfoType>({[UserInfoList.ID]: '', [UserInfoList.PW]: ''});
 	const [errors, setErrors] = useState<ErrorInfoType>({[UserInfoList.ID]: {status:false, message:''}, [UserInfoList.PW]: {status:false, message:''}});
 	const [toast, setToast] = useState<ToastAlertType | null>(null);
+	const { setUser } = useUser();
 
 	const inputChange = <K extends keyof LoginUserInfoType>(key:K, value:LoginUserInfoType[K]) => {
 		setUserInfo(prev => ({...prev, [key] : value}));
@@ -39,15 +41,9 @@ const Login = () => {
 			const response = await api.post('/auth/login', userInfo);
 
 			if(response.data.success) {
-				setToast({
-					open: true,
-					type: 'success',
-					message: response.data.message,
-					onClose: () => {navigate('/place/list');}
-				});
-
 				localStorage.setItem('token', response.data.token);
-
+				setUser({id:response.data.id, nickname: response.data.nickname});
+				navigate('/place/list');
 			} else {
 				setToast({
 					open: true,
@@ -57,6 +53,7 @@ const Login = () => {
 				});
 
 				localStorage.removeItem('token');
+				setUser(null);
 			}
 		}
 	}

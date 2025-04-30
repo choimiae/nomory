@@ -9,8 +9,6 @@ const PrivateRoute = ({children} : {children: JSX.Element}) => {
 	if(loading)
 		return <CircularProgress />;
 
-	console.log(user)
-
 	if(!user)
 		return <Navigate to="/login" replace />
 
