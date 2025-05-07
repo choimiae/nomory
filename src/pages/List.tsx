@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import api from '../setup/api';
 import Layout from '../template/Layout';
 import PlaceFormModal from '../components/PlaceFormModal';
-import {MarkerListType} from '../setup/interfaces';
+import {FolderGroupType, MarkerListType} from '../setup/interfaces';
 import {CustomOverlayMap, Map, MapMarker} from 'react-kakao-maps-sdk';
 import {Box, Chip, IconButton, InputBase, Paper} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
@@ -11,7 +11,9 @@ import MarkerActiveImg from '../assets/marker-active.png';
 import {ToastAlert, ToastAlertType} from '../components/ToastAlert';
 import ReplayIcon from '@mui/icons-material/Replay';
 
-type SelectMarkerListType = MarkerListType & {is_saved?: boolean}
+type SelectMarkerListType = MarkerListType & {
+	is_saved?: boolean
+}
 
 const List:React.FC = () => {
 	const [markers, setMarkers] = useState<MarkerListType[]>([]);
@@ -20,6 +22,7 @@ const List:React.FC = () => {
 	const [selectMarker, setSelectMarker] = useState<MarkerListType | null>(null);
 	const [open, setOpen] = useState<boolean>(false);
 	const [toast, setToast] = useState<ToastAlertType | null>(null);
+	const [folderList, setFolderList] = useState<FolderGroupType | null>(null);
 	const ps = new kakao.maps.services.Places();
 
 	useEffect(() => {
@@ -124,6 +127,9 @@ const List:React.FC = () => {
 	const selectMarkerOpen = (data:MarkerListType) => {
 		setOpen(true);
 		setSelectMarker(data);
+		selectFolderList().then((res) => {
+			setFolderList(res);
+		});
 		selectMarkerList(data.idx).then((res) => {
 			if(res.length > 0) {
 				setSelectMarker({...data, memo: res[0].memo, date: res[0].date, rating: res[0].rating, reg_date: res[0].reg_date, mod_date: res[0].mod_date});
@@ -172,6 +178,12 @@ const List:React.FC = () => {
 		}));
 
 		return response.data;
+	}
+
+	// 폴더 검색
+	const selectFolderList = async () => {
+		const response = await api.get<{message: string, data:FolderGroupType }>('/folder');
+		return response.data.data;
 	}
 
 	// 새로고침
@@ -248,7 +260,7 @@ const List:React.FC = () => {
 			</Box>
 
 			{/* 팝업 :: 장소 등록 */}
-			<PlaceFormModal open={open} onClose={selectMarkerClose} onConfirm={saveMarker} info={selectMarker} onDelete={deleteMaker}/>
+			<PlaceFormModal open={open} onClose={selectMarkerClose} onConfirm={saveMarker} info={selectMarker} onDelete={deleteMaker} folderList={folderList}/>
 
 			{/* 알림 :: 토스트 */}
 			<ToastAlert toast={toast} />
