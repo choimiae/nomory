@@ -1,8 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button, Rating, Typography, SxProps, Box, Stack} from '@mui/material';
+import {Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button, Rating, Typography, SxProps, Box, Stack, Chip} from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import {MarkerListType} from '../setup/interfaces';
-import ShareIcon from '@mui/icons-material/Share';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import AddIcon from '@mui/icons-material/Add';
 
 interface PlaceOptionType {
 	open: boolean;
@@ -78,11 +80,15 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfir
 					<Stack component="div" direction="row" alignItems="center" justifyContent="space-between" gap="0 10px">
 						{data.title}
 						<IconButton component="a" href={shareUrl} target="_blank" rel="noopener noreferrer" color="primary" size="small" aria-label="공유하기">
-							<ShareIcon fontSize="small" />
+							<OpenInNewIcon fontSize="small" />
 						</IconButton>
 					</Stack>
 				</DialogTitle>
 				<DialogContent dividers>
+					<Stack direction="row" gap="5px" flexWrap="wrap" sx={{mb:1}}>
+						<Chip icon={<FiberManualRecordIcon sx={{color: "#3d6cb3 !important", fontSize: "12px !important"}}/>} label="기본" variant="outlined" size="small" sx={{pl:0.5}}/>
+						<Chip icon={<AddIcon sx={{color: "#fff !important"}}/>} color="secondary" label="폴더 추가" variant="filled" size="small" sx={{pl:0.5}}/>
+					</Stack>
 					<TextField
 						autoFocus
 						required
@@ -140,7 +146,7 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfir
 					<Button variant='outlined' sx={{flex:"1 1 auto"}} onClick={onClose}>취소</Button>
 					<Button type="button" variant="contained" sx={{flex:"0 0 60%"}} onClick={() => {onConfirm(data);}}>저장하기</Button>
 				</DialogActions>
-			</Dialog >
+			</Dialog>
 		</>
 	)
 }
