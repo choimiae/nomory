@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import api from '../setup/api';
 import Layout from '../template/Layout';
 import PlaceFormModal from '../components/PlaceFormModal';
-import {FolderGroupType, MarkerListType} from '../setup/interfaces';
+import {FolderItemType, MarkerListType} from '../setup/interfaces';
 import {CustomOverlayMap, Map, MapMarker} from 'react-kakao-maps-sdk';
 import {Box, Chip, IconButton, InputBase, Paper} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
@@ -22,7 +22,7 @@ const List:React.FC = () => {
 	const [selectMarker, setSelectMarker] = useState<MarkerListType | null>(null);
 	const [open, setOpen] = useState<boolean>(false);
 	const [toast, setToast] = useState<ToastAlertType | null>(null);
-	const [folderList, setFolderList] = useState<FolderGroupType | null>(null);
+	const [folderList, setFolderList] = useState<FolderItemType[] | null>(null);
 	const ps = new kakao.maps.services.Places();
 
 	useEffect(() => {
@@ -132,7 +132,7 @@ const List:React.FC = () => {
 		});
 		selectMarkerList(data.idx).then((res) => {
 			if(res.length > 0) {
-				setSelectMarker({...data, memo: res[0].memo, date: res[0].date, rating: res[0].rating, reg_date: res[0].reg_date, mod_date: res[0].mod_date});
+				setSelectMarker({...data, folder_idx:res[0].folder_idx, memo: res[0].memo, date: res[0].date, rating: res[0].rating, reg_date: res[0].reg_date, mod_date: res[0].mod_date});
 			}
 		});
 	}
@@ -182,7 +182,7 @@ const List:React.FC = () => {
 
 	// 폴더 검색
 	const selectFolderList = async () => {
-		const response = await api.get<{message: string, data:FolderGroupType }>('/folder');
+		const response = await api.get<{message: string, data:FolderItemType[] }>('/folder');
 		return response.data.data;
 	}
 

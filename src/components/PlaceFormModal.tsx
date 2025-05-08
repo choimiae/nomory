@@ -1,13 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button, Rating, Typography, SxProps, Box, Stack, Chip} from '@mui/material';
 import IconButton from '@mui/material/IconButton';
-import {FolderGroupType, FolderListType, MarkerListType} from '../setup/interfaces';
+import {FolderItemType, MarkerListType} from '../setup/interfaces';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import AddIcon from '@mui/icons-material/Add';
-import {CustomOverlayMap, MapMarker} from "react-kakao-maps-sdk";
-import MarkerActiveImg from "../assets/marker-active.png";
-import MarkerImg from "../assets/marker.png";
 
 interface PlaceOptionType {
 	open: boolean;
@@ -15,12 +12,12 @@ interface PlaceOptionType {
 	onConfirm: (value:MarkerListType) => void;
 	onDelete: (value:MarkerListType['idx']) => void;
 	info: MarkerListType | null;
-	folderList: FolderGroupType | null;
+	folderList: FolderItemType[] | null;
 }
 
 const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClose, onConfirm, onDelete}) => {
 	const [data, setData] = useState<MarkerListType | null>(info);
-	const [folder, setFolder] = useState<FolderGroupType | null>(folderList);
+	const [folder, setFolder] = useState<FolderItemType[] | null>(folderList);
 
 	useEffect(() => {
 		setData(info);
@@ -92,14 +89,28 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClo
 				</DialogTitle>
 				<DialogContent dividers>
 					<Stack direction="row" gap="5px" flexWrap="wrap" sx={{mb:1}}>
-						{/*{
-							folder && folder.map((item:FolderListType) => (
-
-									<Chip icon={<FiberManualRecordIcon sx={{color: "#3d6cb3 !important", fontSize: "12px !important"}}/>} label="기본" variant="outlined" size="small" sx={{pl:0.5}}/>
-
-
+						{
+							folder && folder.map((item:FolderItemType) => (
+								<Chip
+									key={item.idx}
+									icon={
+										<FiberManualRecordIcon
+											sx={{
+												color: item.idx === data.folder_idx ? `#fff !important` : `${item.color} !important` ,
+												fontSize: "12px !important"
+											}}
+										/>
+									}
+									label={item.title}
+									variant="outlined"
+									size="small"
+									sx={{
+										color: item.idx === data.folder_idx ? `#fff !important` : `${item.color} !important` ,
+										pl:0.5,
+									}}
+								/>
 							))
-						}*/}
+						}
 						<Chip icon={<AddIcon sx={{color: "#fff !important"}}/>} color="secondary" label="폴더 추가" variant="filled" size="small" sx={{pl:0.5}}/>
 					</Stack>
 					<TextField

@@ -4,22 +4,12 @@ export interface MarkerListType {
 	pos_lng: number;
 	title: string;
 	addr: string;
-	folder_idx?: number | null;
+	folder_idx?: number;
 	date?: string | null;
 	memo?: string | null;
 	rating?: number | null;
 	reg_date?: string | null;
 	mod_date?: string | null;
-}
-
-export interface FolderListType {
-	idx: string,
-	title:string,
-	color:string
-}
-
-export type FolderGroupType = {
-	[key : string] : FolderListType
 }
 
 export enum UserInfoList {
@@ -33,4 +23,10 @@ export interface UserInfoType {
 	[UserInfoList.ID] : string;
 	[UserInfoList.PW] : string;
 	[UserInfoList.NICKNAME] :string;
+}
+
+export interface FolderItemType {
+	idx: number;
+	title: string;
+	color: string;
 }
