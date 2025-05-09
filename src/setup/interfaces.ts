@@ -4,7 +4,7 @@ export interface MarkerListType {
 	pos_lng: number;
 	title: string;
 	addr: string;
-	folder_idx?: number;
+	folder_idx?: number | null;
 	date?: string | null;
 	memo?: string | null;
 	rating?: number | null;

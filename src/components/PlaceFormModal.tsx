@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import styled from 'styled-components';
 import {Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button, Rating, Typography, SxProps, Box, Stack, Chip} from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import {FolderItemType, MarkerListType} from '../setup/interfaces';
@@ -15,9 +16,18 @@ interface PlaceOptionType {
 	folderList: FolderItemType[] | null;
 }
 
+const StyledChip = styled(Chip) <{$active: boolean, $color: string}>`
+	border-color: ${({ $active, $color }) => ($active ? $color : '#c6c6c6')};
+	background: ${({ $active, $color }) => ($active ? `${$color} !important` : '#fff')};
+	color: ${({ $active }) => ($active ? '#fff' : '#111')};
+	.MuiChip-icon {
+		color: ${({ $active, $color }) => ($active ? '#fff' : $color)};
+	}
+`;
+
 const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClose, onConfirm, onDelete}) => {
-	const [data, setData] = useState<MarkerListType | null>(info);
-	const [folder, setFolder] = useState<FolderItemType[] | null>(folderList);
+	const [data, setData] = useState<MarkerListType | null>(null);
+	const [folder, setFolder] = useState<FolderItemType[] | null>(null);
 
 	useEffect(() => {
 		setData(info);
@@ -57,7 +67,7 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClo
 		return setData((prev) => prev ? { ...prev, [key]: value } : null);
 	}
 
-	const sx: SxProps = {
+	const StyledDialog: SxProps = {
 		'& .MuiDialog-container': {
 			alignItems: 'flex-end'
 		},
@@ -70,6 +80,7 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClo
 		}
 	};
 
+
 	return (
 		<>
 			<Dialog
@@ -77,7 +88,7 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClo
 				open={open}
 				fullWidth={true}
 				maxWidth="sm"
-				sx={sx}
+				sx={StyledDialog}
 			>
 				<DialogTitle sx={{ m:0, pt:1.5, pb:1.5, pl:2, pr:2 }}>
 					<Stack component="div" direction="row" alignItems="center" justifyContent="space-between" gap="0 10px">
@@ -89,27 +100,34 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClo
 				</DialogTitle>
 				<DialogContent dividers>
 					<Stack direction="row" gap="5px" flexWrap="wrap" sx={{mb:1}}>
+						<StyledChip
+							icon={<FiberManualRecordIcon sx={{ fontSize: "12px !important" }} />}
+							label="기본"
+							variant="outlined"
+							size="small"
+							$active={data.folder_idx == null}
+							$color="#bebebe"
+							sx={{ pl: 0.5 }}
+							onClick={() => {dataStore('folder_idx', null);}}
+						/>
 						{
-							folder && folder.map((item:FolderItemType) => (
-								<Chip
-									key={item.idx}
-									icon={
-										<FiberManualRecordIcon
-											sx={{
-												color: item.idx === data.folder_idx ? `#fff !important` : `${item.color} !important` ,
-												fontSize: "12px !important"
-											}}
-										/>
-									}
-									label={item.title}
-									variant="outlined"
-									size="small"
-									sx={{
-										color: item.idx === data.folder_idx ? `#fff !important` : `${item.color} !important` ,
-										pl:0.5,
-									}}
-								/>
-							))
+							folder && folder.map((item:FolderItemType) => {
+								let isActive  = item.idx === data.folder_idx;
+
+								return (
+									<StyledChip
+										key={item.idx}
+										icon={<FiberManualRecordIcon sx={{fontSize: "12px !important"}} />}
+										label={item.title}
+										variant="outlined"
+										size="small"
+										$active={isActive}
+										$color={item.color}
+										sx={{pl:0.5}}
+										onClick={() => {dataStore('folder_idx', item.idx);}}
+									/>
+								)
+							})
 						}
 						<Chip icon={<AddIcon sx={{color: "#fff !important"}}/>} color="secondary" label="폴더 추가" variant="filled" size="small" sx={{pl:0.5}}/>
 					</Stack>
