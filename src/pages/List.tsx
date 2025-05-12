@@ -26,7 +26,8 @@ const List:React.FC = () => {
 	const ps = new kakao.maps.services.Places();
 
 	useEffect(() => {
-		if (map) renderMarkerList();
+		if (map)
+			refreshMarkerList();
 	}, [map]);
 
 
@@ -85,15 +86,14 @@ const List:React.FC = () => {
 		})
 	}
 
-	// 저장된 마커 조회
+	// 마커 목록 조회
 	const selectMarkerList = async (idx?:MarkerListType['idx']) : Promise<MarkerListType[]> => {
 		const response = await api.get<{message: string, data:MarkerListType[]}>('/place', {params: idx ? {idx: idx} : ''});
 		return response.data.data;
 	}
 
-
-	// 저장된 마커 렌더
-	const renderMarkerList = () => {
+	// 마커 렌더
+	const refreshMarkerList = () => {
 		if (!map) return;
 
 		const bounds = new kakao.maps.LatLngBounds();
@@ -152,7 +152,7 @@ const List:React.FC = () => {
 		const res = await selectMarkerList(data.idx);
 		const response = res.length > 0 ? await api.patch<MarkerListType>('/place', data) :  await api.post<MarkerListType>('/place', data);
 
-		renderMarkerList();
+		refreshMarkerList();
 		setOpen(false);
 		setToast(() => ({
 			open: true,
@@ -168,7 +168,7 @@ const List:React.FC = () => {
 	const deleteMaker = async (idx:MarkerListType['idx']) : Promise<MarkerListType> =>  {
 		const response = await api.delete<MarkerListType>('/place', {params: {idx}});
 
-		renderMarkerList();
+		refreshMarkerList();
 		setOpen(false);
 		setToast(() => ({
 			open: true,
@@ -185,12 +185,6 @@ const List:React.FC = () => {
 		const response = await api.get<{message: string, data:FolderItemType[] }>('/folder');
 		return response.data.data;
 	}
-
-	// 새로고침
-	const reload = () => {
-		renderMarkerList();
-	}
-
 
 	return (
 		<Layout>
@@ -219,7 +213,7 @@ const List:React.FC = () => {
 							type="button"
 							sx={{borderLeft:"1px solid #eee", borderRadius:0}}
 							aria-label="새로고침"
-							onClick={reload}
+							onClick={refreshMarkerList}
 						>
 							<ReplayIcon/>
 						</IconButton>
