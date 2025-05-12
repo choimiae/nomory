@@ -40,11 +40,14 @@ const StyledChip = styled(Chip) <{$active: boolean, $color: string}>`
 
 const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClose, onConfirm, onDelete}) => {
 	const [data, setData] = useState<MarkerListType | null>(null);
-	const [folder, setFolder] = useState<FolderItemType[] | null>(null);
+	const [folderIdx, setFolderIdx] = useState<number | null>(null);
 
 	useEffect(() => {
-		setData(info);
-		setFolder(folderList);
+		if(info) {
+			setData(info);
+			setFolderIdx(info.folder_idx ?? null);
+		}
+
 	}, [info, folderList]);
 
 	if(!open || !data) return null;
@@ -93,14 +96,14 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClo
 							label="기본"
 							variant="outlined"
 							size="small"
-							$active={data.folder_idx == null}
+							$active={folderIdx == null}
 							$color="#bebebe"
 							sx={{ pl: 0.5 }}
-							onClick={() => {handleChange('folder_idx', null);}}
+							onClick={() => {setFolderIdx(null);}}
 						/>
 						{
-							folder && folder.map((item:FolderItemType) => {
-								let isActive  = item.idx === data.folder_idx;
+							folderList && folderList.map((item:FolderItemType) => {
+								let isActive  = item.idx === folderIdx;
 
 								return (
 									<StyledChip
@@ -112,7 +115,7 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClo
 										$active={isActive}
 										$color={item.color}
 										sx={{pl:0.5}}
-										onClick={() => {handleChange('folder_idx', item.idx);}}
+										onClick={() => {setFolderIdx(item.idx);}}
 									/>
 								)
 							})
@@ -174,7 +177,7 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClo
 				</DialogContent>
 				<DialogActions sx={{justifyContent:"center"}}>
 					<Button variant='outlined' sx={{flex:"1 1 auto"}} onClick={onClose}>취소</Button>
-					<Button type="button" variant="contained" sx={{flex:"0 0 60%"}} onClick={() => {onConfirm(data);}}>저장하기</Button>
+					<Button type="button" variant="contained" sx={{flex:"0 0 60%"}} onClick={() => {onConfirm({...data, folder_idx: folderIdx});}}>저장하기</Button>
 				</DialogActions>
 			</Dialog>
 		</>
