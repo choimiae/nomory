@@ -47,12 +47,9 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClo
 			setData(info);
 			setFolderIdx(info.folder_idx ?? null);
 		}
-
-	}, [info, folderList]);
+	}, [info]);
 
 	if(!open || !data) return null;
-
-	const shareUrl = `https://place.map.kakao.com/${data.idx}`;
 
 	// 일자 input
 	const dateChange = (event:React.ChangeEvent<HTMLInputElement>) => {
@@ -84,7 +81,7 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClo
 				<DialogTitle sx={{ m:0, pt:1.5, pb:1.5, pl:2, pr:2 }}>
 					<Stack component="div" direction="row" alignItems="center" justifyContent="space-between" gap="0 10px">
 						{data.title}
-						<IconButton component="a" href={shareUrl} target="_blank" rel="noopener noreferrer" color="primary" size="small" aria-label="공유하기">
+						<IconButton component="a" href={`https://place.map.kakao.com/${data.idx}`} target="_blank" rel="noopener noreferrer" color="primary" size="small" aria-label="공유하기">
 							<OpenInNewIcon fontSize="small" />
 						</IconButton>
 					</Stack>
@@ -103,8 +100,6 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClo
 						/>
 						{
 							folderList && folderList.map((item:FolderItemType) => {
-								let isActive  = item.idx === folderIdx;
-
 								return (
 									<StyledChip
 										key={item.idx}
@@ -112,7 +107,7 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClo
 										label={item.title}
 										variant="outlined"
 										size="small"
-										$active={isActive}
+										$active={item.idx === folderIdx}
 										$color={item.color}
 										sx={{pl:0.5}}
 										onClick={() => {setFolderIdx(item.idx);}}
@@ -162,17 +157,14 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClo
 					<Rating name="rating" value={data.rating || 0} max={5} onChange={(event, value) => {handleChange('rating', value)}}/>
 					<Box component="div" sx={{mt:2, display:"flex", alignItems:"center", gap:"0 20px", color:'#7b7b7b'}}>
 						{
-							data.reg_date ?
-								<Typography component="div">등록일자: {data.reg_date.substring(0,10)}</Typography> : ''
+							data.reg_date ? <Typography component="div">등록일자: {data.reg_date.substring(0,10)}</Typography> : ''
 						}
 						{
-							data.mod_date ?
-								<Typography component="div">수정일자: {data.mod_date.substring(0,10)}</Typography> : data.mod_date
+							data.mod_date ? <Typography component="div">수정일자: {data.mod_date.substring(0,10)}</Typography> : data.mod_date
 						}
 					</Box>
 					{
-						data.reg_date ?
-							<Button color="error" variant="outlined" sx={{mt:2, width:"100%"}} onClick={() => {onDelete(data.idx);}}>장소 삭제하기</Button> : ''
+						data.reg_date ? <Button color="error" variant="outlined" sx={{mt:2, width:"100%"}} onClick={() => {onDelete(data.idx);}}>장소 삭제하기</Button> : ''
 					}
 				</DialogContent>
 				<DialogActions sx={{justifyContent:"center"}}>
