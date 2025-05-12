@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
-import {Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button, Rating, Typography, SxProps, Box, Stack, Chip} from '@mui/material';
+import {Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button, Rating, Typography, SxProps, Box, Stack, Chip, Collapse} from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import {FolderItemType, MarkerListType} from '../setup/interfaces';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
@@ -41,6 +41,7 @@ const StyledChip = styled(Chip) <{$active: boolean, $color: string}>`
 const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClose, onConfirm, onDelete}) => {
 	const [data, setData] = useState<MarkerListType | null>(null);
 	const [folderIdx, setFolderIdx] = useState<number | null>(null);
+	const [folderOpen, setFolderOpen] = useState<boolean>(false);
 
 	useEffect(() => {
 		if(info && open) {
@@ -115,7 +116,31 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClo
 								)
 							})
 						}
-						<Chip icon={<AddIcon sx={{color: "#fff !important"}}/>} color="secondary" label="폴더 추가" variant="filled" size="small" sx={{pl:0.5}}/>
+						<Chip
+							icon={<AddIcon sx={{color: "#fff !important"}}/>}
+							color="secondary"
+							label="폴더 추가"
+							variant="filled"
+							size="small"
+							sx={{pl:0.5}}
+							onClick={() => {setFolderOpen(true);}}
+						/>
+
+						<Collapse in={folderOpen} timeout="auto" unmountOnExit sx={{width:"100%"}}>
+							<Stack spacing={1} mt={1}>
+								<TextField
+									autoFocus
+									required
+									margin="dense"
+									type="text"
+									fullWidth
+									variant="standard"
+									placeholder="폴더 이름을 입력해 주세요."
+								/>
+								<Button type="button" variant="outlined">폴더 추가하기</Button>
+							</Stack>
+						</Collapse>
+
 					</Stack>
 					<TextField
 						autoFocus
@@ -156,16 +181,10 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClo
 					<Typography component="div" sx={{pt:2}}>평점</Typography>
 					<Rating name="rating" value={data.rating || 0} max={5} onChange={(event, value) => {handleChange('rating', value)}}/>
 					<Box component="div" sx={{mt:2, display:"flex", alignItems:"center", gap:"0 20px", color:'#7b7b7b'}}>
-						{
-							data.reg_date ? <Typography component="div">등록일자: {data.reg_date.substring(0,10)}</Typography> : ''
-						}
-						{
-							data.mod_date ? <Typography component="div">수정일자: {data.mod_date.substring(0,10)}</Typography> : data.mod_date
-						}
+						{ data.reg_date ? <Typography component="div">등록일자: {data.reg_date.substring(0,10)}</Typography> : '' }
+						{ data.mod_date ? <Typography component="div">수정일자: {data.mod_date.substring(0,10)}</Typography> : data.mod_date }
 					</Box>
-					{
-						data.reg_date ? <Button color="error" variant="outlined" sx={{mt:2, width:"100%"}} onClick={() => {onDelete(data.idx);}}>장소 삭제하기</Button> : ''
-					}
+					{ data.reg_date ? <Button color="error" variant="outlined" sx={{mt:2, width:"100%"}} onClick={() => {onDelete(data.idx);}}>장소 삭제하기</Button> : '' }
 				</DialogContent>
 				<DialogActions sx={{justifyContent:"center"}}>
 					<Button variant='outlined' sx={{flex:"1 1 auto"}} onClick={onClose}>취소</Button>
