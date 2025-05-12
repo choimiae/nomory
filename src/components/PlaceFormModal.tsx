@@ -43,11 +43,11 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClo
 	const [folderIdx, setFolderIdx] = useState<number | null>(null);
 
 	useEffect(() => {
-		if(info) {
+		if(info && open) {
 			setData(info);
 			setFolderIdx(info.folder_idx ?? null);
 		}
-	}, [info]);
+	}, [info, open]);
 
 	if(!open || !data) return null;
 
