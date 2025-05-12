@@ -16,6 +16,19 @@ interface PlaceOptionType {
 	folderList: FolderItemType[] | null;
 }
 
+const StyledDialog: SxProps = {
+	'& .MuiDialog-container': {
+		alignItems: 'flex-end'
+	},
+	'& .MuiDialog-paper': {
+		margin: 0,
+		borderRadius: 0,
+		width: '100%',
+		maxWidth: '100%',
+		maxHeight:'100%'
+	}
+};
+
 const StyledChip = styled(Chip) <{$active: boolean, $color: string}>`
 	border-color: ${({ $active, $color }) => ($active ? $color : '#c6c6c6')};
 	background: ${({ $active, $color }) => ($active ? `${$color} !important` : '#fff')};
@@ -48,38 +61,13 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClo
 			return year;
 		});
 
-		dataStore('date', value);
+		handleChange('date', value);
 	}
-
-	// 메모 input
-	const memoChange = (event:React.ChangeEvent<HTMLInputElement>) => {
-		dataStore('memo', event.target.value);
-	}
-
-	// 별점 input
-	const ratingChange = (event:React.SyntheticEvent, value:MarkerListType['rating']) => {
-		dataStore('rating', value);
-	}
-
 
 	// 데이터 저장
-	const dataStore = <K extends keyof MarkerListType>(key: K, value:MarkerListType[K]) => {
+	const handleChange = <K extends keyof MarkerListType>(key: K, value:MarkerListType[K]) => {
 		return setData((prev) => prev ? { ...prev, [key]: value } : null);
 	}
-
-	const StyledDialog: SxProps = {
-		'& .MuiDialog-container': {
-			alignItems: 'flex-end'
-		},
-		'& .MuiDialog-paper': {
-			margin: 0,
-			borderRadius: 0,
-			width: '100%',
-			maxWidth: '100%',
-			maxHeight:'100%'
-		}
-	};
-
 
 	return (
 		<>
@@ -108,7 +96,7 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClo
 							$active={data.folder_idx == null}
 							$color="#bebebe"
 							sx={{ pl: 0.5 }}
-							onClick={() => {dataStore('folder_idx', null);}}
+							onClick={() => {handleChange('folder_idx', null);}}
 						/>
 						{
 							folder && folder.map((item:FolderItemType) => {
@@ -124,7 +112,7 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClo
 										$active={isActive}
 										$color={item.color}
 										sx={{pl:0.5}}
-										onClick={() => {dataStore('folder_idx', item.idx);}}
+										onClick={() => {handleChange('folder_idx', item.idx);}}
 									/>
 								)
 							})
@@ -163,12 +151,12 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClo
 						value={data.memo || ''}
 						fullWidth
 						variant="standard"
-						onChange={memoChange}
+						onChange={(event:React.ChangeEvent<HTMLInputElement>) => {handleChange('memo', event.target.value);}}
 						multiline
 						rows={5}
 					/>
 					<Typography component="div" sx={{pt:2}}>평점</Typography>
-					<Rating name="rating" value={data.rating || 0} max={5} onChange={ratingChange}/>
+					<Rating name="rating" value={data.rating || 0} max={5} onChange={(event, value) => {handleChange('rating', value)}}/>
 					<Box component="div" sx={{mt:2, display:"flex", alignItems:"center", gap:"0 20px", color:'#7b7b7b'}}>
 						{
 							data.reg_date ?
