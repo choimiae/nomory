@@ -15,7 +15,7 @@ type SelectMarkerListType = MarkerListType & {
 	is_saved?: boolean
 }
 
-const List:React.FC = () => {
+const PlaceList:React.FC = () => {
 	const [markers, setMarkers] = useState<MarkerListType[]>([]);
 	const [map, setMap] = useState<any>();
 	const [input, setInput] = useState<string>('');
@@ -263,4 +263,4 @@ const List:React.FC = () => {
 }
 
 
-export default List;
+export default PlaceList;
