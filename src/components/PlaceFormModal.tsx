@@ -125,22 +125,30 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClo
 							sx={{pl:0.5}}
 							onClick={() => {setFolderOpen(true);}}
 						/>
-
 						<Collapse in={folderOpen} timeout="auto" unmountOnExit sx={{width:"100%"}}>
 							<Stack spacing={1} mt={1}>
-								<TextField
-									autoFocus
-									required
-									margin="dense"
-									type="text"
-									fullWidth
-									variant="standard"
-									placeholder="폴더 이름을 입력해 주세요."
-								/>
+								<Stack direction="row" alignItems="flex-end" spacing={1}>
+									<TextField
+										type="color"
+										value="#bebebe"
+										sx={{
+											flex:"0 0 40px",
+											"& input" : {padding:0, height:32}
+										}}
+									/>
+									<TextField
+										autoFocus
+										required
+										margin="dense"
+										type="text"
+										fullWidth
+										variant="standard"
+										placeholder="폴더 이름을 입력해 주세요."
+									/>
+								</Stack>
 								<Button type="button" variant="outlined">폴더 추가하기</Button>
 							</Stack>
 						</Collapse>
-
 					</Stack>
 					<TextField
 						autoFocus
