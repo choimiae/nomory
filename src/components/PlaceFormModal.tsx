@@ -2,10 +2,11 @@ import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import {Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button, Rating, Typography, SxProps, Box, Stack, Chip, Collapse} from '@mui/material';
 import IconButton from '@mui/material/IconButton';
-import {FolderItemType, MarkerListType} from '../setup/interfaces';
+import {FolderItemType, MarkerListType, UserInfoList} from '../setup/interfaces';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import AddIcon from '@mui/icons-material/Add';
+import api from "../setup/api";
 
 interface PlaceOptionType {
 	open: boolean;
@@ -13,8 +14,9 @@ interface PlaceOptionType {
 	onConfirm: (value:MarkerListType) => void;
 	onDelete: (value:MarkerListType['idx']) => void;
 	info: MarkerListType | null;
-	folderList: FolderItemType[] | null;
 }
+
+type FolderEachType = Omit<FolderItemType, 'idx'>
 
 const StyledDialog: SxProps = {
 	'& .MuiDialog-container': {
@@ -29,6 +31,11 @@ const StyledDialog: SxProps = {
 	}
 };
 
+const INIT_FOLDER_VALUE:FolderEachType = {
+	title: '',
+	color: '#3d6cb3'
+}
+
 const StyledChip = styled(Chip) <{$active: boolean, $color: string}>`
 	border-color: ${({ $active, $color }) => ($active ? $color : '#c6c6c6')};
 	background: ${({ $active, $color }) => ($active ? `${$color} !important` : '#fff')};
@@ -38,19 +45,38 @@ const StyledChip = styled(Chip) <{$active: boolean, $color: string}>`
 	}
 `;
 
-const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClose, onConfirm, onDelete}) => {
+const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfirm, onDelete}) => {
 	const [data, setData] = useState<MarkerListType | null>(null);
-	const [folderIdx, setFolderIdx] = useState<number | null>(null);
 	const [folderOpen, setFolderOpen] = useState<boolean>(false);
+	const [folderList, setFolderList] = useState<FolderItemType[] | null>(null);
+	const [folderIdx, setFolderIdx] = useState<number | null>(null);
+	const [folderEach, setFolderEach] = useState<FolderEachType>(INIT_FOLDER_VALUE);
+
+	// 폴더 검색
+	const selectFolderList = async () => {
+		const response = await api.get<{message: string, data:FolderItemType[] }>('/folder');
+		return response.data.data;
+	}
 
 	useEffect(() => {
 		if(info && open) {
 			setData(info);
 			setFolderIdx(info.folder_idx ?? null);
+			setFolderOpen(false);
+			setFolderEach(INIT_FOLDER_VALUE);
+			selectFolderList().then(setFolderList);
 		}
 	}, [info, open]);
 
 	if(!open || !data) return null;
+
+	// 폴더 저장
+	const saveFolder = async () => {
+		if(folderEach.title.trim() !== '') {
+			const response = await api.post<FolderEachType>('/folder', folderEach);
+			selectFolderList().then(setFolderList);
+		}
+	}
 
 	// 일자 input
 	const dateChange = (event:React.ChangeEvent<HTMLInputElement>) => {
@@ -95,7 +121,7 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClo
 							variant="outlined"
 							size="small"
 							$active={folderIdx == null}
-							$color="#bebebe"
+							$color={INIT_FOLDER_VALUE.color}
 							sx={{ pl: 0.5 }}
 							onClick={() => {setFolderIdx(null);}}
 						/>
@@ -130,11 +156,12 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClo
 								<Stack direction="row" alignItems="flex-end" spacing={1}>
 									<TextField
 										type="color"
-										value="#bebebe"
+										value={folderEach.color}
 										sx={{
 											flex:"0 0 40px",
 											"& input" : {padding:0, height:32}
 										}}
+										onChange={(event) => {setFolderEach(prev => ({...prev, 'color' : event.target.value}));}}
 									/>
 									<TextField
 										autoFocus
@@ -144,9 +171,11 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, folderList, open, onClo
 										fullWidth
 										variant="standard"
 										placeholder="폴더 이름을 입력해 주세요."
+										value={folderEach.title}
+										onChange={(event) => {setFolderEach(prev => ({...prev, 'title' : event.target.value}));}}
 									/>
 								</Stack>
-								<Button type="button" variant="outlined">폴더 추가하기</Button>
+								<Button type="button" variant="outlined" onClick={saveFolder}>폴더 추가하기</Button>
 							</Stack>
 						</Collapse>
 					</Stack>
