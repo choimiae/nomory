@@ -2,11 +2,11 @@ import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import {Dialog, DialogTitle, DialogContent, TextField, DialogActions, Button, Rating, Typography, SxProps, Box, Stack, Chip, Collapse} from '@mui/material';
 import IconButton from '@mui/material/IconButton';
-import {FolderItemType, MarkerListType, UserInfoList} from '../setup/interfaces';
+import {FolderItemType, MarkerListType} from '../setup/interfaces';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import AddIcon from '@mui/icons-material/Add';
-import api from "../setup/api";
+import api from '../setup/api';
 
 interface PlaceOptionType {
 	open: boolean;

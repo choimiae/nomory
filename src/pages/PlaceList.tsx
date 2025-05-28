@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import api from '../setup/api';
 import Layout from '../template/Layout';
 import PlaceFormModal from '../components/PlaceFormModal';
-import {MarkerListType} from '../setup/interfaces';
+import {FolderItemType, MarkerListType} from '../setup/interfaces';
 import {CustomOverlayMap, Map, MapMarker} from 'react-kakao-maps-sdk';
 import {Box, Chip, IconButton, InputBase, Paper} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
@@ -22,13 +22,34 @@ const PlaceList:React.FC = () => {
 	const [selectMarker, setSelectMarker] = useState<MarkerListType | null>(null);
 	const [open, setOpen] = useState<boolean>(false);
 	const [toast, setToast] = useState<ToastAlertType | null>(null);
+	const [folderList, setFolderList] = useState<FolderItemType[] | null>(null);
 	const ps = new kakao.maps.services.Places();
+
+	// 폴더 조회
+	const selectFolder = async ()  => {
+		const response = await api.get<{message: string, data:FolderItemType[]}>('/folder');
+		return response.data.data;
+	}
 
 	useEffect(() => {
 		if (map)
 			refreshMarkerList();
+
+		selectFolder().then(res => {
+			setFolderList(res);
+		});
 	}, [map]);
 
+	// 폴더 색상 조회
+	const folderColorMap = useMemo(() => {
+		const map : {[key : number] : string} = {};
+
+		folderList?.forEach(folder => {
+			map[folder.idx] = folder.color;
+		})
+
+		return map;
+	}, [folderList]);
 
 	// 검색어 입력
 	const searchKeyword = (event:React.ChangeEvent<HTMLInputElement>) => {
@@ -54,7 +75,7 @@ const PlaceList:React.FC = () => {
 				for (let i = 0; i < data.length; i++) {
 					// 주소 중복 체크
 					const isDuplicate = markerArr.some(item => item.addr === data[i].address_name);
-					const isSaved = savedMarkers.some(item => item.idx === Number(data[i].id));
+					const matchMarker = savedMarkers.find(item => item.idx === Number(data[i].id));
 
 					if(isDuplicate) continue;
 
@@ -64,7 +85,8 @@ const PlaceList:React.FC = () => {
 						pos_lng:Number(data[i].x),
 						title: data[i].place_name,
 						addr:data[i].address_name,
-						is_saved: isSaved
+						is_saved: !!matchMarker,
+						folder_idx: !!matchMarker ? matchMarker.folder_idx : null
 					});
 
 					bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x))
@@ -107,7 +129,8 @@ const PlaceList:React.FC = () => {
 						pos_lng:Number(item.pos_lng),
 						title: item.title,
 						addr:item.addr,
-						is_saved: true
+						is_saved: true,
+						folder_idx: item.folder_idx
 					});
 					bounds.extend(new kakao.maps.LatLng(item.pos_lat, item.pos_lng))
 				});
@@ -216,28 +239,44 @@ const PlaceList:React.FC = () => {
 						onCreate={setMap}
 					>
 						{
-							markers.map((marker:SelectMarkerListType) => (
-								<div key={marker.idx}>
-									<MapMarker
-										position={{lat: marker.pos_lat, lng: marker.pos_lng}}
-										image={{src: marker.is_saved ? MarkerActiveImg : MarkerImg, size: {width:22, height:28}}}
-										clickable={true}
-										onClick={() => selectMarkerOpen(marker)}
-									>
-									</MapMarker>
-									<CustomOverlayMap
-										position={{lat: marker.pos_lat, lng: marker.pos_lng}}
-										yAnchor={2.2}
-									>
-										<Chip
-											color="default"
-											size="small"
-											label={marker.title}
-											sx={marker.is_saved ? {background:"#3d6cb3", color:"#fff", border:"1px solid #000", fontSize:13} : {background:"#fff", color:"#111", border:"1px solid #000", fontSize:13}}
-										/>
-									</CustomOverlayMap>
-								</div>
-							))
+							markers.map((marker:SelectMarkerListType) =>  {
+								let styledChip = {
+									background: '#fff',
+									color: '#111',
+									borderWidth: '1px',
+									borderStyle:'solid',
+									borderColor: '#111',
+									fontSize: 13
+								}
+
+								if(marker.is_saved) {
+									const color = marker.folder_idx ? (folderColorMap[marker.folder_idx] || '#3d6cb3') : '#3d6cb3';
+									styledChip = {...styledChip, background:color, borderColor:color, color: '#fff'}
+								}
+
+								return (
+									<div key={marker.idx}>
+										<MapMarker
+											position={{lat: marker.pos_lat, lng: marker.pos_lng}}
+											image={{src: marker.is_saved ? MarkerActiveImg : MarkerImg, size: {width:22, height:28}}}
+											clickable={true}
+											onClick={() => selectMarkerOpen(marker)}
+										>
+										</MapMarker>
+										<CustomOverlayMap
+											position={{lat: marker.pos_lat, lng: marker.pos_lng}}
+											yAnchor={2.2}
+										>
+											<Chip
+												color="default"
+												size="small"
+												label={marker.title}
+												sx={styledChip}
+											/>
+										</CustomOverlayMap>
+									</div>
+								)
+							})
 						}
 					</Map>
 				</Box>
