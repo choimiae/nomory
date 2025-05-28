@@ -240,6 +240,7 @@ const PlaceList:React.FC = () => {
 					>
 						{
 							markers.map((marker:SelectMarkerListType) =>  {
+								console.log('여기 렌더링!!!!')
 								let styledChip = {
 									background: '#fff',
 									color: '#111',
@@ -258,7 +259,7 @@ const PlaceList:React.FC = () => {
 									<div key={marker.idx}>
 										<MapMarker
 											position={{lat: marker.pos_lat, lng: marker.pos_lng}}
-											image={{src: marker.is_saved ? MarkerActiveImg : MarkerImg, size: {width:22, height:28}}}
+											image={{src: MarkerImg, size: {width:22, height:28}}}
 											clickable={true}
 											onClick={() => selectMarkerOpen(marker)}
 										>
