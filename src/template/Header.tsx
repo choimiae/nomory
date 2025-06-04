@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
-import {Box, Link, Stack} from '@mui/material';
+import {Box, Link, Stack, SxProps} from '@mui/material';
 import FaceIcon from '@mui/icons-material/Face';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import FolderCopyOutlinedIcon from '@mui/icons-material/FolderCopyOutlined';
@@ -22,6 +22,11 @@ const Header:React.FC = () => {
 		navigate('/');
 	}
 
+	const StyledMenuItem: SxProps = {
+		gap:"0 8px",
+		color:"#7c7c7c",
+		minHeight:"auto"
+	};
 
 	return (
 		<Stack component="header" direction="row" alignItems="center" justifyContent="space-between" sx={{p:2, pb:1.5}}>
@@ -55,10 +60,10 @@ const Header:React.FC = () => {
 					onClose={()=>{setAnchorElem(null);}}
 					sx={{top:10}}
 				>
-					<MenuItem onClick={logout} sx={{gap:"0 8px", color:"#959595", minHeight:"auto"}}>
+					<MenuItem onClick={logout} sx={StyledMenuItem}>
 						<ExitToAppIcon fontSize="small" /> 로그아웃
 					</MenuItem>
-					<MenuItem sx={{gap:"0 8px", color:"#959595", minHeight:"auto"}}>
+					<MenuItem sx={StyledMenuItem}>
 						<FolderCopyOutlinedIcon fontSize="small" /> 폴더관리
 					</MenuItem>
 				</Menu>
