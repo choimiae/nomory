@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {useNavigate} from 'react-router-dom';
+import {Link as RouterLink, useNavigate} from 'react-router-dom';
 import {Box, Link, Stack, SxProps} from '@mui/material';
 import FaceIcon from '@mui/icons-material/Face';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
@@ -29,9 +29,24 @@ const Header:React.FC = () => {
 	};
 
 	return (
-		<Stack component="header" direction="row" alignItems="center" justifyContent="space-between" sx={{p:2, pb:1.5}}>
+		<Stack
+			component="header"
+			direction="row"
+			alignItems="center"
+			justifyContent="space-between"
+			sx={{
+				p:2,
+				pb:1.5,
+				borderBottom:"1px solid #eee",
+				position:"sticky",
+				left:0,
+				top:0,
+				zIndex:10,
+				background:"#fff"
+			}}
+		>
 			<Box component="h1">
-				<Link href="/"><img src={LogoImg} alt="" style={{maxWidth:85}}/></Link>
+				<Link component={RouterLink} to="/"><img src={LogoImg} alt="" style={{maxWidth:85}}/></Link>
 			</Box>
 			<div>
 				<Button
@@ -63,7 +78,7 @@ const Header:React.FC = () => {
 					<MenuItem onClick={logout} sx={StyledMenuItem}>
 						<ExitToAppIcon fontSize="small" /> 로그아웃
 					</MenuItem>
-					<MenuItem sx={StyledMenuItem}>
+					<MenuItem component={RouterLink} to={"/folder"} sx={StyledMenuItem}>
 						<FolderCopyOutlinedIcon fontSize="small" /> 폴더관리
 					</MenuItem>
 				</Menu>

@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Box, Button, Card, CardActions, CardContent, Link, TextField, Typography} from '@mui/material';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, Link as RouterLink} from 'react-router-dom';
 import LogoImg from '../assets/logo.png';
 import {UserInfoList, UserInfoType} from '../setup/interfaces';
 import api from '../setup/api';
@@ -102,7 +102,7 @@ const Login = () => {
 						<Button type="button" variant="contained" fullWidth onClick={login}>로그인</Button>
 					</CardActions>
 					<Box sx={{textAlign:"center", mt:1}}>
-						<Link href="/register" underline="none" variant="body2">회원가입</Link>
+						<Link component={RouterLink} to="/register" underline="none" variant="body2">회원가입</Link>
 					</Box>
 				</Card>
 			</Box>

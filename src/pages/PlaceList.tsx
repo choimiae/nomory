@@ -198,6 +198,7 @@ const PlaceList:React.FC = () => {
 		return response.data;
 	}
 
+	// 마커 칩 생성
 	const MarkerChip: React.FC<{marker:SelectMarkerListType, folderColorMap: {[key:number]: string}}> = React.memo(({marker, folderColorMap}) => {
 		const color = marker.is_saved ? (marker.folder_idx ? folderColorMap[marker.folder_idx] || '#3d6cb3' : '#3d6cb3') : '#fff';
 		const textColor = marker.is_saved ? '#fff' : '#111';
@@ -228,7 +229,29 @@ const PlaceList:React.FC = () => {
 	return (
 		<Layout>
 			<Box component="div" sx={{display:"flex", flexDirection:"column", height:"100%"}}>
-				<Box component="div" sx={{p:2, pt:0, position:"relative"}}>
+				<Box component="div" sx={{flex: "1 1 auto"}}>
+					<Map
+						center={{lat: 37.881377, lng: 127.729746 }}
+						style={{width: "100%", height: "100%"}}
+						onCreate={setMap}
+					>
+						{
+							markers.map((marker:SelectMarkerListType) =>  (
+								<div key={marker.idx}>
+									<MapMarker
+										position={{lat: marker.pos_lat, lng: marker.pos_lng}}
+										image={{src: MarkerImg, size: {width:22, height:28}}}
+										clickable={true}
+										onClick={() => selectMarkerOpen(marker)}
+									>
+									</MapMarker>
+									<MarkerChip marker={marker} folderColorMap={folderColorMap} />
+								</div>
+							))
+						}
+					</Map>
+				</Box>
+				<Box component="div" sx={{p:2, position:"relative"}}>
 					<Paper
 						component="div"
 						variant="outlined"
@@ -257,28 +280,6 @@ const PlaceList:React.FC = () => {
 							<ReplayIcon/>
 						</IconButton>
 					</Paper>
-				</Box>
-				<Box component="div" sx={{flex: "1 1 auto"}}>
-					<Map
-						center={{lat: 37.881377, lng: 127.729746 }}
-						style={{width: "100%", height: "100%"}}
-						onCreate={setMap}
-					>
-						{
-							markers.map((marker:SelectMarkerListType) =>  (
-								<div key={marker.idx}>
-									<MapMarker
-										position={{lat: marker.pos_lat, lng: marker.pos_lng}}
-										image={{src: MarkerImg, size: {width:22, height:28}}}
-										clickable={true}
-										onClick={() => selectMarkerOpen(marker)}
-									>
-									</MapMarker>
-									<MarkerChip marker={marker} folderColorMap={folderColorMap} />
-								</div>
-							))
-						}
-					</Map>
 				</Box>
 			</Box>
 

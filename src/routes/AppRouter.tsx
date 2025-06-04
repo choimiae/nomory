@@ -6,6 +6,7 @@ import PrivateRoute from '../routes/PrivateRoute';
 import PlaceList from '../pages/PlaceList';
 import Register from '../pages/Register';
 import Login from '../pages/Login';
+import FolderManage from '../pages/FolderManage';
 
 const AppRouter:React.FC = () => {
 
@@ -18,6 +19,7 @@ const AppRouter:React.FC = () => {
 						<Route path="/login" element={<Login/>}></Route>
 						<Route path="/register" element={<Register/>}></Route>
 						<Route path="/place" element={<PrivateRoute><PlaceList/></PrivateRoute>}></Route>
+						<Route path="/folder" element={<PrivateRoute><FolderManage/></PrivateRoute>}></Route>
 					</Routes>
 				</BrowserRouter>
 			</CustomThemeProvider>

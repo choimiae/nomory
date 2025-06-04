@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {useNavigate} from 'react-router-dom';
+import {Link as RouterLink, useNavigate} from 'react-router-dom';
 import {Box, Button, Card, CardActions, CardContent, Link, TextField, Typography} from '@mui/material';
 import LogoImg from '../assets/logo.png';
 import api from '../setup/api';
@@ -152,7 +152,7 @@ const Register:React.FC = () => {
 						<Button type="button" variant="contained" fullWidth onClick={join}>가입하기</Button>
 					</CardActions>
 					<Box sx={{textAlign:"center", mt:1}}>
-						<Link href="/login" underline="none" variant="body2">로그인하기</Link>
+						<Link component={RouterLink} to="/login" underline="none" variant="body2">로그인하기</Link>
 					</Box>
 				</Card>
 			</Box>
