@@ -43,7 +43,7 @@ const Login = () => {
 			if(response.data.success) {
 				localStorage.setItem('token', response.data.token);
 				setUser({id:response.data.id, nickname: response.data.nickname});
-				navigate('/place/list');
+				navigate('/place');
 			} else {
 				setToast({
 					open: true,

@@ -17,7 +17,7 @@ const AppRouter:React.FC = () => {
 						<Route path="/" element={<PrivateRoute><PlaceList/></PrivateRoute>}></Route>
 						<Route path="/login" element={<Login/>}></Route>
 						<Route path="/register" element={<Register/>}></Route>
-						<Route path="/place/list" element={<PrivateRoute><PlaceList/></PrivateRoute>}></Route>
+						<Route path="/place" element={<PrivateRoute><PlaceList/></PrivateRoute>}></Route>
 					</Routes>
 				</BrowserRouter>
 			</CustomThemeProvider>
