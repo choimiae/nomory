@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import {Link as RouterLink, useNavigate} from 'react-router-dom';
-import {Box, Link, Stack, SxProps} from '@mui/material';
-import FaceIcon from '@mui/icons-material/Face';
+import {Box, Link, Stack, SxProps, IconButton, Avatar} from '@mui/material';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import FolderCopyOutlinedIcon from '@mui/icons-material/FolderCopyOutlined';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
@@ -19,7 +19,7 @@ const Header:React.FC = () => {
 		localStorage.removeItem('token');
 		setUser(null);
 
-		navigate('/');
+		navigate('/', {replace: true});
 	}
 
 	const StyledMenuItem: SxProps = {
@@ -33,7 +33,7 @@ const Header:React.FC = () => {
 			component="header"
 			direction="row"
 			alignItems="center"
-			justifyContent="space-between"
+			justifyContent="center"
 			sx={{
 				p:2,
 				pb:1.5,
@@ -45,19 +45,18 @@ const Header:React.FC = () => {
 				background:"#fff"
 			}}
 		>
+			<IconButton aria-label="뒤로가기" sx={{p:0, position:"absolute", left:10, top:"50%", transform:"translateY(-50%)", color:"#686868"}} onClick={() => {navigate(-1);}}>
+				<ArrowBackIosNewIcon fontSize="small"/>
+			</IconButton>
 			<Box component="h1">
 				<Link component={RouterLink} to="/"><img src={LogoImg} alt="" style={{maxWidth:85}}/></Link>
 			</Box>
-			<div>
+			<Box sx={{position:"absolute", right:15, top:"50%", transform:"translateY(-50%)"}}>
 				<Button
-					size="medium"
-					aria-controls="menu"
-					aria-haspopup="true"
 					onClick={(event:React.MouseEvent<HTMLElement>)=>{setAnchorElem(event.currentTarget);}}
-					sx={{gap:"0 5px", p:0, lineHeight:1}}
+					sx={{gap:"0 5px", p:0, lineHeight:1, minWidth:"auto"}}
 				>
-					<FaceIcon />
-					{user?.nickname}
+					<Avatar sx={{width:30, height:30, fontSize:"1.1em" }}>{user?.nickname ? user.nickname.charAt(0).toUpperCase() : 'U'}</Avatar>
 				</Button>
 				<Menu
 					id="menu"
@@ -79,10 +78,10 @@ const Header:React.FC = () => {
 						<ExitToAppIcon fontSize="small" /> 로그아웃
 					</MenuItem>
 					<MenuItem component={RouterLink} to={"/folder"} sx={StyledMenuItem}>
-						<FolderCopyOutlinedIcon fontSize="small" /> 폴더관리
+						<FolderCopyOutlinedIcon fontSize="small" /> 폴더설정
 					</MenuItem>
 				</Menu>
-			</div>
+			</Box>
 		</Stack>
 	)
 }

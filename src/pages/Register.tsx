@@ -71,7 +71,7 @@ const Register:React.FC = () => {
 						open: true,
 						type: 'success',
 						message: '회원 가입이 완료되었습니다.',
-						onClose: () => {navigate('/login');}
+						onClose: () => {navigate('/login', {replace:true});}
 					});
 				} else {
 					setToast({
