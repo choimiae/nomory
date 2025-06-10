@@ -113,36 +113,30 @@ const PlaceList:React.FC = () => {
 	}
 
 	// 마커 렌더
-	const refreshMarkerList = () => {
+	const refreshMarkerList = async () => {
 		if (!map) return;
 
 		const bounds = new kakao.maps.LatLngBounds();
-		let markerArr:SelectMarkerListType[] = [];
+		const [markerRes, folderRes] = await Promise.all([selectMarkerList(), selectFolder()]);
 
-		selectMarkerList().then((res) => {
-			if(res.length > 0) {
-				res.forEach(item => {
-					markerArr.push({
-						idx: Number(item.idx),
-						pos_lat:Number(item.pos_lat),
-						pos_lng:Number(item.pos_lng),
-						title: item.title,
-						addr:item.addr,
-						is_saved: true,
-						folder_idx: item.folder_idx
-					});
-					bounds.extend(new kakao.maps.LatLng(item.pos_lat, item.pos_lng))
-				});
+		setFolderList(folderRes);
 
-				setMarkers(markerArr);
-				map.setBounds(bounds);
-			} else {
-				bounds.extend(new kakao.maps.LatLng(37.881377, 127.729746))
-				map.setBounds(bounds);
+		const markerArr:SelectMarkerListType[] = markerRes.map(item => {
+			bounds.extend(new kakao.maps.LatLng(item.pos_lat, item.pos_lng));
+			return {
+				idx: Number(item.idx),
+				pos_lat:Number(item.pos_lat),
+				pos_lng:Number(item.pos_lng),
+				title: item.title,
+				addr:item.addr,
+				is_saved: true,
+				folder_idx: item.folder_idx
 			}
 		});
-	}
 
+		setMarkers(markerArr.length > 0 ? markerArr : []);
+		map.setBounds(bounds);
+	}
 
 	// 마커 클릭
 	const selectMarkerOpen = (data:MarkerListType) => {
@@ -155,13 +149,11 @@ const PlaceList:React.FC = () => {
 		});
 	}
 
-
 	// 마커 닫기
 	const selectMarkerClose = () => {
 		setOpen(false);
 		setSelectMarker(null);
 	}
-
 
 	// 마커 저장
 	const saveMarker = async (data:Partial<MarkerListType>) : Promise<MarkerListType> => {
