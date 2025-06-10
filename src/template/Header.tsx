@@ -49,7 +49,7 @@ const Header:React.FC = () => {
 				<ArrowBackIosNewIcon fontSize="small"/>
 			</IconButton>
 			<Box component="h1">
-				<Link component={RouterLink} to="/"><img src={LogoImg} alt="" style={{maxWidth:85}}/></Link>
+				<Button sx={{p:0}} onClick={() => navigate('/', {replace: true})}><img src={LogoImg} alt="" style={{maxWidth:85}}/></Button>
 			</Box>
 			<Box sx={{position:"absolute", right:15, top:"50%", transform:"translateY(-50%)"}}>
 				<Button

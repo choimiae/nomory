@@ -78,6 +78,18 @@ const FolderManage:React.FC = () => {
 		}
 	}
 
+	const deleteFolder = async (idx:FolderItemType['idx']) => {
+		const response = await api.delete<FolderItemType>('/folder', {params: {idx}});
+
+		await selectList();
+		setToast(() => ({
+			open: true,
+			type: 'success',
+			message: '장소를 삭제했습니다.',
+			onClose: () => setToast((prev) => (prev ? { ...prev, open: false } : null)),
+		}));
+	}
+
 	return (
 		<>
 			<Layout>
@@ -93,7 +105,7 @@ const FolderManage:React.FC = () => {
 									<ListItem key={item.idx}
 									          secondaryAction={
 												<Stack direction="row" gap={1}>
-													<IconButton edge="end" aria-label="삭제">
+													<IconButton edge="end" aria-label="삭제" onClick={() => {deleteFolder(item.idx)}}>
 														<DeleteIcon fontSize="small"/>
 													</IconButton>
 													<IconButton edge="end" aria-label="설정" onClick={() => selectFolderOpen(item.idx)}>
