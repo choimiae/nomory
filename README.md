@@ -16,6 +16,8 @@ Nomad + Memory = Nomory(Wander Through Memories)<br>
 
 ## 📷 스크린샷
 <img src="https://github.com/user-attachments/assets/6847a550-ebbe-448e-a8f8-7cef6aec3d24" height="400"/>
-<img src="https://github.com/user-attachments/assets/4071a9c1-37d6-4e56-a6d9-2627f9e9dbe3" height="400"/>
-<img src="https://github.com/user-attachments/assets/41bc27eb-d305-4fed-9cff-ee17c19ac97e" height="400"/>
-<img src="https://github.com/user-attachments/assets/c7b4e33a-397f-44c3-96d0-fef6558262ff" height="400"/>
+<img src="https://github.com/user-attachments/assets/cc1ed22b-f169-4576-b9b1-ae69111850b4" height="400"/>
+<img src="https://github.com/user-attachments/assets/d279e0b5-3176-4d82-a4e5-383048f6e7a8" height="400"/>
+<img src="https://github.com/user-attachments/assets/4691a314-2b84-4b53-889f-b01315e179a6" height="400"/>
+<img src="https://github.com/user-attachments/assets/27623101-510b-4cde-9ea0-e9e687cda7c9" height="400"/>
+<img src="https://github.com/user-attachments/assets/35c337be-02c9-4a38-bdae-c46a57dc33d7" height="400"/>
