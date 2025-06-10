@@ -32,7 +32,7 @@ const PlaceList:React.FC = () => {
 
 	useEffect(() => {
 		if (map)
-			refreshMarkerList();
+			reset();
 
 		selectFolder().then(res => {
 			setFolderList(res);
@@ -162,7 +162,7 @@ const PlaceList:React.FC = () => {
 		const res = await selectMarkerList(data.idx);
 		const response = res.length > 0 ? await api.patch<MarkerListType>('/place', data) :  await api.post<MarkerListType>('/place', data);
 
-		refreshMarkerList();
+		reset();
 		setOpen(false);
 		setToast(() => ({
 			open: true,
@@ -178,7 +178,7 @@ const PlaceList:React.FC = () => {
 	const deleteMaker = async (idx:MarkerListType['idx']) : Promise<MarkerListType> =>  {
 		const response = await api.delete<MarkerListType>('/place', {params: {idx}});
 
-		refreshMarkerList();
+		reset();
 		setOpen(false);
 		setToast(() => ({
 			open: true,
@@ -218,6 +218,12 @@ const PlaceList:React.FC = () => {
 		)
 	})
 
+	// 초기화
+	const reset = () => {
+		refreshMarkerList();
+		setInput('');
+	}
+
 	return (
 		<Layout>
 			<Box component="div" sx={{display:"flex", flexDirection:"column", height:"100%"}}>
@@ -252,6 +258,7 @@ const PlaceList:React.FC = () => {
 						<InputBase
 							sx={{pl:2, pr:2, flex: 1}}
 							placeholder="키워드/장소를 입력해주세요."
+							value={input}
 							onInput={searchKeyword}
 							onKeyDown={searchKeydown}
 						/>
@@ -266,8 +273,8 @@ const PlaceList:React.FC = () => {
 						<IconButton
 							type="button"
 							sx={{borderLeft:"1px solid #eee", borderRadius:0}}
-							aria-label="새로고침"
-							onClick={refreshMarkerList}
+							aria-label="초기화"
+							onClick={reset}
 						>
 							<ReplayIcon/>
 						</IconButton>
