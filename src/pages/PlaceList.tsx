@@ -134,7 +134,11 @@ const PlaceList:React.FC = () => {
 			}
 		});
 
-		setMarkers(markerArr.length > 0 ? markerArr : []);
+		setMarkers(markerArr);
+
+		if(markerArr.length <= 0)
+			bounds.extend(new kakao.maps.LatLng(37.881377, 127.729746));
+
 		map.setBounds(bounds);
 	}
 
@@ -226,30 +230,8 @@ const PlaceList:React.FC = () => {
 
 	return (
 		<Layout>
-			<Box component="div" sx={{display:"flex", flexDirection:"column", height:"100%"}}>
-				<Box component="div" sx={{flex: "1 1 auto"}}>
-					<Map
-						center={{lat: 37.881377, lng: 127.729746 }}
-						style={{width: "100%", height: "100%"}}
-						onCreate={setMap}
-					>
-						{
-							markers.map((marker:SelectMarkerListType) =>  (
-								<div key={marker.idx}>
-									<MapMarker
-										position={{lat: marker.pos_lat, lng: marker.pos_lng}}
-										image={{src: MarkerImg, size: {width:22, height:28}}}
-										clickable={true}
-										onClick={() => selectMarkerOpen(marker)}
-									>
-									</MapMarker>
-									<MarkerChip marker={marker} folderColorMap={folderColorMap} />
-								</div>
-							))
-						}
-					</Map>
-				</Box>
-				<Box component="div" sx={{p:2, position:"relative"}}>
+			<Box component="div" sx={{display:"flex", flexDirection:"column", height:"100%", position:"relative"}}>
+				<Box component="section" sx={{p:2, position:"absolute", left:0, top:0, width:"100%", zIndex:5}}>
 					<Paper
 						component="div"
 						variant="outlined"
@@ -279,6 +261,28 @@ const PlaceList:React.FC = () => {
 							<ReplayIcon/>
 						</IconButton>
 					</Paper>
+				</Box>
+				<Box component="section" sx={{flex: "1 1 auto"}}>
+					<Map
+						center={{lat: 37.881377, lng: 127.729746 }}
+						style={{width: "100%", height: "100%"}}
+						onCreate={setMap}
+					>
+						{
+							markers.map((marker:SelectMarkerListType) =>  (
+								<div key={marker.idx}>
+									<MapMarker
+										position={{lat: marker.pos_lat, lng: marker.pos_lng}}
+										image={{src: MarkerImg, size: {width:22, height:28}}}
+										clickable={true}
+										onClick={() => selectMarkerOpen(marker)}
+									>
+									</MapMarker>
+									<MarkerChip marker={marker} folderColorMap={folderColorMap} />
+								</div>
+							))
+						}
+					</Map>
 				</Box>
 			</Box>
 

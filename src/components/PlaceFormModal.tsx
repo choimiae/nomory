@@ -75,6 +75,7 @@ const PlaceFormModal:React.FC<PlaceOptionType> = ({info, open, onClose, onConfir
 		if(folderEach.title.trim() !== '') {
 			const response = await api.post<FolderEachType>('/folder', folderEach);
 			selectFolderList().then(setFolderList);
+			setFolderEach(INIT_FOLDER_VALUE);
 		}
 	}
 

@@ -12,10 +12,10 @@ const Layout:React.FC<LayoutType> = ({ children }) => {
 			component="main"
 			sx={{height:"100vh", display:"flex", flexDirection:"column"}}
 		>
-			<Header/>
 			<Container component="section" sx={{p:[0,0,0], flex:"1 1 auto", maxWidth:["none", "none", "none"]}}>
 				{children}
 			</Container>
+			<Header/>
 		</Box>
 	)
 }

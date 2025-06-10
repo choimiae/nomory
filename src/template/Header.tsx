@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
 import {Link as RouterLink, useNavigate} from 'react-router-dom';
-import {Box, Link, Stack, SxProps, IconButton, Avatar} from '@mui/material';
+import {SxProps, AppBar, Toolbar, Typography} from '@mui/material';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import FolderCopyOutlinedIcon from '@mui/icons-material/FolderCopyOutlined';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import FaceIcon from '@mui/icons-material/Face';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
@@ -18,7 +19,6 @@ const Header:React.FC = () => {
 	const logout = () => {
 		localStorage.removeItem('token');
 		setUser(null);
-
 		navigate('/', {replace: true});
 	}
 
@@ -29,50 +29,31 @@ const Header:React.FC = () => {
 	};
 
 	return (
-		<Stack
-			component="header"
-			direction="row"
-			alignItems="center"
-			justifyContent="center"
-			sx={{
-				p:2,
-				pb:1.5,
-				borderBottom:"1px solid #eee",
-				position:"sticky",
-				left:0,
-				top:0,
-				zIndex:10,
-				background:"#fff"
-			}}
-		>
-			<IconButton aria-label="뒤로가기" sx={{p:0, position:"absolute", left:10, top:"50%", transform:"translateY(-50%)", color:"#686868"}} onClick={() => {navigate(-1);}}>
-				<ArrowBackIosNewIcon fontSize="small"/>
-			</IconButton>
-			<Box component="h1">
+		<AppBar component="header" position="sticky">
+			<Toolbar sx={{alignItems:"center", justifyContent: "space-between", background:"#fff", p:0}}>
+				<Button sx={{p:0, display:"flex", flexDirection:"column", gap:0.5}} onClick={() => {navigate(-1);}}>
+					<ArrowBackIosNewIcon sx={{fontSize:"1.2em"}}/>
+					<Typography variant="button" sx={{lineHeight:1, fontSize:"0.9em"}}>BACK</Typography>
+				</Button>
 				<Button sx={{p:0}} onClick={() => navigate('/', {replace: true})}><img src={LogoImg} alt="" style={{maxWidth:85}}/></Button>
-			</Box>
-			<Box sx={{position:"absolute", right:15, top:"50%", transform:"translateY(-50%)"}}>
 				<Button
+					aria-controls="menu"
+					aria-haspopup="true"
 					onClick={(event:React.MouseEvent<HTMLElement>)=>{setAnchorElem(event.currentTarget);}}
-					sx={{gap:"0 5px", p:0, lineHeight:1, minWidth:"auto"}}
+					sx={{p:0, display:"flex", flexDirection:"column", gap:0.5}}
 				>
-					<Avatar sx={{width:30, height:30, fontSize:"1.1em" }}>{user?.nickname ? user.nickname.charAt(0).toUpperCase() : 'U'}</Avatar>
+					<FaceIcon sx={{fontSize:"1.2em"}}/>
+					<Typography variant="button" sx={{lineHeight:1, fontSize:"0.9em"}}>MY</Typography>
 				</Button>
 				<Menu
 					id="menu"
 					anchorEl={anchorElem}
-					anchorOrigin={{
-						vertical: 'bottom',
-						horizontal: 'right',
-					}}
 					keepMounted
-					transformOrigin={{
-						vertical: 'top',
-						horizontal: 'right',
-					}}
 					open={Boolean(anchorElem)}
 					onClose={()=>{setAnchorElem(null);}}
-					sx={{top:10}}
+					sx={{
+						"& .css-1tktgsa-MuiPaper-root-MuiPopover-paper-MuiMenu-paper": {left:"auto !important", right:0, top:"auto !important", bottom:56, boxShadow:0, borderRadius:0}
+					}}
 				>
 					<MenuItem onClick={logout} sx={StyledMenuItem}>
 						<ExitToAppIcon fontSize="small" /> 로그아웃
@@ -81,8 +62,8 @@ const Header:React.FC = () => {
 						<FolderCopyOutlinedIcon fontSize="small" /> 폴더설정
 					</MenuItem>
 				</Menu>
-			</Box>
-		</Stack>
+			</Toolbar>
+		</AppBar>
 	)
 }
 
